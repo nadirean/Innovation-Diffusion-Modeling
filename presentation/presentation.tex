@@ -1,0 +1,69 @@
+\documentclass[9pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+
+% Use the Metropolis beamer theme (style files are present in this folder)
+\usetheme{metropolis}
+
+\title{Model przestrzenno-czasowy dyfuzji innowacji i popytu na rynku}
+\author{Wojciech Bartoszek \\ Łukasz Checiak}
+\institute{}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Wprowadzenie}
+\begin{itemize}
+  \item \textbf{Dyfuzja innowacji} – proces upowszechniania się nowych produktów lub technologii w społeczeństwie, przechodzący kolejne fazy adopcji kolejnych grup odbiorców \cite{wiki:dyfuzja}.
+  \item Proces adopcji przebiega początkowo wolno, następnie nabiera tempa, często zgodnie z charakterystyczną krzywą S (funkcja logistyczna) \cite{bass:1969}.
+  \item Wzrost popytu na innowację wspierają zarówno innowatorzy (early adopters), jak i mechanizm naśladownictwa („word-of-mouth”).
+  \item Modele matematyczne umożliwiają kwantyfikację dynamiki popytu i adopcji (prognozowanie rozmiaru rynku) \cite{hashemi2011}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Klasyczne modele matematyczne dyfuzji}
+\begin{itemize}
+  \item \textbf{Model Bassa} (1969) – równanie różniczkowe opisujące tempo adopcji nowego produktu. Zakłada dwie kategorie nabywców: \emph{innowatorów} (efekt zewnętrzny) i \emph{naśladowców} (efekt imitacji). Równanie: $\frac{dF}{dt}=p(1-F)+qF(1-F)$, gdzie $F(t)$ to skumulowany udział adopcji, $p$ – współczynnik innowacji, $q$ – współczynnik imitacji \cite{bass:1969}. Rozwiązanie daje S-kształtną krzywą adopcji: początkowo szybki wzrost, potem nasycenie.
+  \item \textbf{Równanie Fishera–Kolmogorowa–Petrowskiego–Piskunowa (F-KPP)} – reakcyjno-dyfuzyjne równanie PDE: $u_t = D \Delta u + r\,u(1-u)$ \cite{fisher1937}. Proponowane w genetyce populacji (Fisher 1937) do opisania fali rozprzestrzeniania korzystnego genu. W ekonomii modeluje propagację innowacji jako falę nasycenia (przejście od stanu bez adopcji do pełnej adopcji).
+  \item \textbf{Przebieg krzywej adopcji} – obydwa powyższe modele generują krzywą typu logistycznego (S-kształtną): szybka faza początkowa (wzrost adopcji) i faza wygaszania przy nasyceniu rynku \cite{bass:1969,fisher1937}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Uogólnienie do modeli przestrzenno-czasowych (PDE)}
+\begin{itemize}
+  \item Dodanie wymiaru przestrzennego do modelu Bassa prowadzi do \emph{równania cząstkowego różniczkowego}: 
+  $$\frac{\partial F(x,t)}{\partial t} = D \Delta F + p\,(1-F) + q\,F(1-F)\,,$$
+  gdzie $D$ to współczynnik dyfuzji (intensywność rozprzestrzeniania informacji w przestrzeni) \cite{dubinina2023}.
+    gdzie $D$ to współczynnik dyfuzji (intensywność rozprzestrzeniania informacji w przestrzeni) \cite{dubinina2023}.
+  \item Takie modele reakcji–dyfuzji uwzględniają mechanizmy lokalnej interakcji (zależność od odległości przestrzennej) oraz pierwiastek losowy/adopcyjny w zachowaniach konsumentów.
+  \item Rozwiązania przyjmują formę propagujących się fal innowacji (autowal). Ich prędkość opisuje tempo rozwoju popytu w przestrzeni – np. Dubinina (2023) analitycznie wyprowadza falę podróżującą, określając czas osiągnięcia danego poziomu technologii \cite{dubinina2023}.
+  \item W praktyce modele PDE pozwalają analizować klastrowe rozprzestrzenianie się innowacji (np. koncentrujące się „fale adopcji” wokół centrów innowacyjności) oraz prognozować przestrzenne rozkłady popytu.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Sformułowanie konkretnego modelu}
+\begin{itemize}
+  \item Rozważmy zmienną $u(x,t)\in[0,1]$ – skumulowany udział rynku opanowany przez innowację w punkcie $x$ i czasie $t$. Proponowany model:
+  $$\frac{\partial u}{\partial t} = D\,\Delta u + (p + q\,u)\,(1-u)\,. $$
+  \item Interpretacja parametrów: $p$ – stopa innowacji (zewnętrzna, np. reklama), $q$ – współczynnik imitacji (wewnętrzny, efekt „liczenia się z innymi”), $D$ – współczynnik dyfuzji (szybkość propagacji informacji w przestrzeni).
+  \item Warunki początkowe i brzegowe: np. $u(x,0)=u_0(x)$ z niewielką liczbą pionierów w centrum, \; warunki Neumanna ($\nabla u\cdot n=0$) na granicach.
+    \item Model przewiduje przyspieszony wzrost adopcji w początkowej fazie i asymptotyczne nasycenie rynku ($u\to1$). Rozwiązania (np. numeryczne lub w przybliżeniu falowe) pozwalają wyznaczyć czas rozprzestrzeniania innowacji i tempo wzrostu popytu \cite{hashemi2011}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Podsumowanie i zastosowania}
+\begin{itemize}
+    \item Modele przestrzenno-czasowe umożliwiają uwzględnienie efektów geograficznych: jak bliskość i sieci społeczne przyspieszają dyfuzję innowacji \cite{hashemi2011}.
+  \item Zastosowania: prognozowanie rozkładu adopcji w regionach, identyfikacja klastrów innowacji, planowanie strategii marketingowych z uwzględnieniem lokalizacji (marketing geograficzny).
+    \item Kalibracja na danych empirycznych (np. historia adopcji technologii mobilnej) umożliwia przewidywanie tempa wzrostu popytu i oceny opóźnień geograficznych (patrz Dubinina 2023) \cite{dubinina2023}.
+    \item Dalszy rozwój modeli może uwzględniać heterogeniczność populacji, zależność od cen czy czynniki sieciowe, co można wprowadzić jako dodatkowe składniki PDE (np. sprzężenia zwrotne, nieliniowe czynniki) \cite{hashemi2011}.
+\end{itemize}
+\end{frame}
+
+\end{document}
