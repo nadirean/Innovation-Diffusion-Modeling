@@ -209,7 +209,6 @@ __marimo__/
 # Miscellaneous
 materialy/
 .DS_Store
-results/
 
 # LaTeX auxiliary files
 *.aux
