@@ -1,22 +1,27 @@
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
 \usepackage[polish]{babel}
 \usepackage{amsmath}
-
-% Use the Metropolis beamer theme (style files are present in this folder)
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usetheme{metropolis}
 
-\title{Model przestrzenno-czasowy dyfuzji innowacji i popytu na rynku}
+\title{A11 - Dyfuzja innowacji i popytu na rynku}
 \author{Wojciech Bartoszek \\ Łukasz Checiak}
-\institute{}
-\date{}
+\date{} 
 
 \begin{document}
 
 \begin{frame}
   \titlepage
 \end{frame}
+
+% --- Zadanie 1: original presentation/presentation.tex content ---
+\section*{Zadanie 1 - Wprowadzenie, SOTA i sformułowanie modelu}
 
 \begin{frame}{Wprowadzenie}
 \begin{itemize}
@@ -31,16 +36,16 @@
 \begin{itemize}
   \item \textbf{Model Bassa} (1969) – równanie różniczkowe opisujące tempo adopcji nowego produktu. Zakłada dwie kategorie nabywców: \emph{innowatorów} (efekt zewnętrzny) i \emph{naśladowców} (efekt imitacji). Równanie: $\frac{dF}{dt}=p(1-F)+qF(1-F)$, gdzie $F(t)$ to skumulowany udział adopcji, $p$ – współczynnik innowacji, $q$ – współczynnik imitacji \cite{bass:1969}. Rozwiązanie daje S-kształtną krzywą adopcji: początkowo szybki wzrost, potem nasycenie.
   \item \textbf{Równanie Fishera–Kolmogorowa–Petrowskiego–Piskunowa (F-KPP)} – reakcyjno-dyfuzyjne równanie PDE: $u_t = D \Delta u + r\,u(1-u)$ \cite{fisher1937}. Proponowane w genetyce populacji (Fisher 1937) do opisania fali rozprzestrzeniania korzystnego genu. W ekonomii modeluje propagację innowacji jako falę nasycenia (przejście od stanu bez adopcji do pełnej adopcji).
-  \item \textbf{Przebieg krzywej adopcji} – obydwa powyższe modele generują krzywą typu logistycznego (S-kształtną): szybka faza początkowa (wzrost adopcji) i faza wygaszania przy nasyceniu rynku \cite{bass:1969,fisher1937}.
+  \item \textbf{Przebieg krzywej adopcji} – obydwa powyższe modele generują krzywę typu logistycznego (S-kształtną): szybka faza początkowa (wzrost adopcji) i faza wygaszania przy nasyceniu rynku \cite{bass:1969,fisher1937}.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Uogólnienie do modeli przestrzenno-czasowych (PDE)}
 \begin{itemize}
   \item Dodanie wymiaru przestrzennego do modelu Bassa prowadzi do \emph{równania cząstkowego różniczkowego}: 
-  $$\frac{\partial F(x,t)}{\partial t} = D \Delta F + p\,(1-F) + q\,F(1-F)\,,$$
+  $$\frac{\partial F(x,t)}{\partial t} = D \Delta F + p\,(1-F) + q\,F(1-F)\,,
+  $$
   gdzie $D$ to współczynnik dyfuzji (intensywność rozprzestrzeniania informacji w przestrzeni) \cite{dubinina2023}.
-    gdzie $D$ to współczynnik dyfuzji (intensywność rozprzestrzeniania informacji w przestrzeni) \cite{dubinina2023}.
   \item Takie modele reakcji–dyfuzji uwzględniają mechanizmy lokalnej interakcji (zależność od odległości przestrzennej) oraz pierwiastek losowy/adopcyjny w zachowaniach konsumentów.
   \item Rozwiązania przyjmują formę propagujących się fal innowacji (autowal). Ich prędkość opisuje tempo rozwoju popytu w przestrzeni – np. Dubinina (2023) analitycznie wyprowadza falę podróżującą, określając czas osiągnięcia danego poziomu technologii \cite{dubinina2023}.
   \item W praktyce modele PDE pozwalają analizować klastrowe rozprzestrzenianie się innowacji (np. koncentrujące się „fale adopcji” wokół centrów innowacyjności) oraz prognozować przestrzenne rozkłady popytu.
@@ -53,7 +58,7 @@
   $$\frac{\partial u}{\partial t} = D\,\Delta u + (p + q\,u)\,(1-u)\,. $$
   \item Interpretacja parametrów: $p$ – stopa innowacji (zewnętrzna, np. reklama), $q$ – współczynnik imitacji (wewnętrzny, efekt „liczenia się z innymi”), $D$ – współczynnik dyfuzji (szybkość propagacji informacji w przestrzeni).
   \item Warunki początkowe i brzegowe: np. $u(x,0)=u_0(x)$ z niewielką liczbą pionierów w centrum, \; warunki Neumanna ($\nabla u\cdot n=0$) na granicach.
-    \item Model przewiduje przyspieszony wzrost adopcji w początkowej fazie i asymptotyczne nasycenie rynku ($u\to1$). Rozwiązania (np. numeryczne lub w przybliżeniu falowe) pozwalają wyznaczyć czas rozprzestrzeniania innowacji i tempo wzrostu popytu \cite{hashemi2011}.
+  \item Model przewiduje przyspieszony wzrost adopcji w początkowej fazie i asymptotyczne nasycenie rynku ($u\to1$). Rozwiązania (np. numeryczne lub w przybliżeniu falowe) pozwalają wyznaczyć czas rozprzestrzeniania innowacji i tempo wzrostu popytu \cite{hashemi2011}.
 \end{itemize}
 \end{frame}
 
@@ -63,6 +68,78 @@
   \item Zastosowania: prognozowanie rozkładu adopcji w regionach, identyfikacja klastrów innowacji, planowanie strategii marketingowych z uwzględnieniem lokalizacji (marketing geograficzny).
     \item Kalibracja na danych empirycznych (np. historia adopcji technologii mobilnej) umożliwia przewidywanie tempa wzrostu popytu i oceny opóźnień geograficznych (patrz Dubinina 2023) \cite{dubinina2023}.
     \item Dalszy rozwój modeli może uwzględniać heterogeniczność populacji, zależność od cen czy czynniki sieciowe, co można wprowadzić jako dodatkowe składniki PDE (np. sprzężenia zwrotne, nieliniowe czynniki) \cite{hashemi2011}.
+\end{itemize}
+\end{frame}
+
+% --- Zadanie 2: content from zad2/presentation/zad2.tex ---
+\section*{Zadanie 2}
+
+\begin{frame}
+  \centering
+  \Large\textbf{Zadanie 2 — Porównanie solverów dla modelu przestrzenno-czasowego}
+\end{frame}
+
+\begin{frame}{Wprowadzenie}
+\begin{itemize}
+  \item Rozważamy model reakcyjno-dyfuzyjny dla udziału adopcji $u(x,t)\in[0,1]$:
+  $$\frac{\partial u}{\partial t} = D\,\frac{\partial^2 u}{\partial x^2} + (p + q\,u)\,(1-u)\,. $$ 
+  \item Parametry: $D$ (dyfuzja), $p$ (innowacja), $q$ (imitacja). Warunki Neumanna na brzegach oraz lokalne warunki początkowe (pionierzy w centrum).
+  \item Celem: porównać wydajność i stabilność rozwiązania dla różnych solverów oraz zidentyfikować bezpieczne przedziały parametrów.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Metoda numeryczna — solvery testowane}
+\begin{itemize}
+  \item explicit: jawny Euler w czasie + centralna druga różnica w przestrzeni (najtańszy krok, ograniczony warunkiem CFL).
+  \item semi-implicit: dyfuzja implicit (rozwiązanie układu liniowego), reakcja jawnie.
+  \item crank-nicolson (CN): CN dla dyfuzji (2. rząd dokładności), reakcja jawnie; większy koszt na krok.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Plan eksperymentu}
+\begin{itemize}
+  \item Siatki w przestrzeni: $nx\in\{50,100,200\}$.
+  \item Kroki czasowe testowane: $\Delta t\in\{5\cdot10^{-5},\,10^{-4}\}$, całkowity czas symulacji: $T=0.05$ (szybkie testy). 
+  \item Zestaw parametrów (D,p,q): (0.01,0.01,1.0), (0.1,0.001,5.0), (1.0,0.1,10.0).
+  \item Mierzone metryki: czas wykonania (s), wykresy profilu $u(x)$, kontrola czy $u\in[0,1]$ i czy występują NaN/Inf.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Zestaw wyników (czasy)}
+Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich kombinacji testowych):
+\begin{itemize}
+  \item explicit — średni czas: $\approx 0.0048\,$s (min $\approx0.0029\,$s, max $\approx0.0068\,$s)
+  \item semi-implicit — średni czas: $\approx 0.0329\,$s (min $\approx0.0164\,$s, max $\approx0.0568\,$s)
+  \item crank-nicolson — średni czas: $\approx 0.0350\,$s (min $\approx0.0178\,$s, max $\approx0.0596\,$s)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Przykładowe profile rozwiązania}
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.4\textwidth}
+  \includegraphics[width=\textwidth]{../zad2/results/explicit_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
+    \caption{explicit, nx=100}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.4\textwidth}
+  \includegraphics[width=\textwidth]{../zad2/results/semi-implicit_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
+    \caption{semi-implicit, nx=100}
+  \end{subfigure}
+  \vspace{0.5em}
+  \begin{subfigure}[b]{0.4\textwidth}
+  \includegraphics[width=\textwidth]{../zad2/results/crank-nicolson_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
+    \caption{Crank–Nicolson, nx=100}
+  \end{subfigure}
+  \caption{Przykładowe profile $u(x)$ po czasie $T=0.05$ dla jednej kombinacji parametrów (D=0.01,p=0.01,q=1.0).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Wnioski}
+\begin{itemize}
+  \item (1) Czas obliczeń: dla krótkich testów jawny solver był najszybszy ze względu na niski koszt pojedynczego kroku; schematy rozwiązujące układy liniowe były wolniejsze.
+  \item (2) Stabilność: jawny (explicit) solver wymaga mniejszego kroku czasowego $\Delta t$ przy wzroście $D$ (CFL \(\sim\) $\mathrm{dx}^2/D$); schematy semi-implicit i CN są bardziej odporne, ale droższe.
+  \item (3) Parametry $p,q$: większe $q$ przyspieszają nasycenie i mogą prowadzić do szybkich wzrostów lokalnych; zalecamy testy kalibracyjne na danych empirycznych.
+  \item (4) Zakresy parametryczne (przykładowo): dla stabilnych symulacji przy $nx=100$ i $dt=10^{-4}$ przykładowe granice to: $D\lesssim0.1$ (dla explicit), $p\in[10^{-4},0.1]$, $q\in[0.1,10]$ — jednak ostateczne granice wymagają szczegółowego testu stabilności i dokładności.
 \end{itemize}
 \end{frame}
 
