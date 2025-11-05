@@ -152,18 +152,6 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Porównanie modelu PDE i surogatu ODE}
-\begin{figure}
-  \centering
-  \includegraphics[width=0.7\textwidth]{../zad3/pde_vs_ode.png}
-  \caption{Porównanie ewolucji średniej wartości $U(t)$ z modelu PDE (linia ciągła) oraz modelu surogatowego ODE (linia przerywana).}
-\end{figure}
-\begin{itemize}
-    \item Model ODE dobrze przybliża ogólną dynamikę uśrednionego modelu PDE.
-    \item Różnice wynikają z faktu, że przybliżenie $\mathbb{E}[f(u)] \approx f(\mathbb{E}[u])$ nie jest dokładne dla nieliniowej funkcji reakcji.
-\end{itemize}
-\end{frame}
-
 \begin{frame}{Sieć neuronowa jako model surogatowy}
 \begin{itemize}
     \item Używamy prostej sieci neuronowej (MLP) do nauczenia się dynamiki średniej wartości $U(t)$ bezpośrednio z danych.
@@ -176,14 +164,9 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
 \begin{frame}{Porównanie wszystkich trzech modeli}
 \begin{figure}
   \centering
-  \includegraphics[width=0.7\textwidth]{../zad3/all_models_comparison.png}
+  \includegraphics[width=0.7\textwidth]{comparison_plot.png}
   \caption{Porównanie średniej z modelu PDE, modelu surogatowego ODE oraz predykcji sieci neuronowej.}
 \end{figure}
-\begin{itemize}
-    \item Sieć neuronowa (NN) bardzo dobrze dopasowała się do danych uczących z modelu PDE.
-    \item Model NN jest w stanie uchwycić subtelne różnice w dynamice, których analityczny model ODE nie uwzględnia.
-    \item Zarówno ODE, jak i NN mogą służyć jako szybkie modele surogatowe, ale NN oferuje potencjalnie wyższą dokładność kosztem potrzeby generowania danych uczących.
-\end{itemize}
 \end{frame}
 
 \begin{frame}{Wnioski końcowe}
