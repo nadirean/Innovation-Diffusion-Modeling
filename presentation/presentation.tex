@@ -154,10 +154,10 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
 
 \begin{frame}{Sieć neuronowa jako model surogatowy}
 \begin{itemize}
-    \item Używamy prostej sieci neuronowej (MLP) do nauczenia się dynamiki średniej wartości $U(t)$ bezpośrednio z danych.
-    \item \textbf{Dane uczące:} Szereg czasowy średniej wartości z symulacji PDE, $\{ (t_i, U_{PDE}(t_i)) \}$.
-    \item \textbf{Architektura:} Sieć z jedną warstwą wejściową (czas), dwiema warstwami ukrytymi (z funkcją aktywacji ReLU) i jedną warstwą wyjściową (przewidywana wartość $U(t)$).
-    \item \textbf{Cel:} Sprawdzenie, czy model oparty na danych może być dokładniejszy niż uproszczony model analityczny ODE.
+    \item \textbf{Cel:} Stworzenie uniwersalnego modelu surogatowego, który generalizuje dynamikę dla różnych parametrów $D, p, q$.
+    \item \textbf{Dane uczące:} Zbiór symulacji PDE dla losowych kombinacji parametrów (uczenie na wielu przebiegach).
+    \item \textbf{Architektura:} Sieć MLP z wejściem 4-wymiarowym $(t, D, p, q)$, dwiema warstwami ukrytymi i wyjściem $U(t)$.
+    \item \textbf{Wynik:} Sieć nauczyła się odwzorowywać wpływ parametrów na krzywą adopcji, co pozwala na natychmiastową predykcję dla nowych, nieznanych wcześniej parametrów.
 \end{itemize}
 \end{frame}
 
@@ -168,8 +168,9 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
   \caption{Porównanie średniej z modelu PDE, modelu surogatowego ODE oraz predykcji sieci neuronowej.}
 \end{figure}
 \begin{itemize}
-    \item Czas inferencji dla modelu ODE: 0.0011657 s
-    \item Czas inferencji dla prostego modelu NN: 0.0006749 s
+    \item Parametry testowe: $D=0.02, p=0.079, q=6.68$.
+    \item Czas inferencji dla modelu ODE: $\approx 1.29$ ms.
+    \item Czas inferencji dla modelu NN: $\approx 0.87$ ms.
 \end{itemize}
 \end{frame}
 
@@ -177,7 +178,7 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
 \begin{itemize}
     \item Modele surogatowe (zarówno analityczne ODE, jak i sieci neuronowe) są potężnym narzędziem do przyspieszania symulacji złożonych systemów PDE.
     \item Model ODE, mimo swojej prostoty, dostarcza dobrego przybliżenia ogólnej dynamiki systemu.
-    \item Sieci neuronowe mogą osiągnąć wyższą dokładność, ale wymagają danych treningowych i nie dostarczają analitycznego wglądu w mechanizmy systemu.
+    \item Sieć neuronowa wytrenowana na zbiorze symulacji potrafi generalizować i przewidywać dynamikę dla nowych parametrów z bardzo wysoką dokładnością i w czasie poniżej 1 ms.
     \item Wybór odpowiedniego modelu surogatowego zależy od wymagań dotyczących dokładności, dostępności danych i potrzeby interpretowalności wyników.
 \end{itemize}
 \end{frame}
