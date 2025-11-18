@@ -1,2 +1,2 @@
-Czas inferencji dla modelu ODE: 1.1657 ms
-Czas inferencji dla prostego modelu NN: 0.6749 ms
+Czas inferencji dla modelu ODE: 1.2921 ms
+Czas inferencji dla prostego modelu NN: 0.8670 ms
