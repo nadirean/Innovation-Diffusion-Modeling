@@ -183,4 +183,78 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
 \end{itemize}
 \end{frame}
 
+% --- zadanie 4 ----
+
+\section{Zadanie 4: Analiza Wrażliwości}
+
+\begin{frame}{Cel i Metodyka Analizy Wrażliwości}
+    \begin{itemize}
+        \item \textbf{Cel:} Zidentyfikowanie, które parametry wejściowe ($D, p, q$) mają największy wpływ na wynik modelu (średnia wartość $U$ w czasie $t=5.0$).
+        \item \textbf{Analizowane modele:}
+        \begin{itemize}
+            \item Pełny model czasowo-przestrzenny (PDE).
+            \item Uproszczony model czasowy (surogat ODE).
+        \end{itemize}
+        \item \textbf{Użyte metody:}
+        \begin{itemize}
+            \item \textbf{Metoda Morrisa:} Metoda przesiewowa, szybka, do identyfikacji najważniejszych parametrów. Mierzy ogólny wpływ ($\mu^*$) i interakcje/nieliniowość ($\sigma$).
+            \item \textbf{Metoda Sobola:} Metoda globalna oparta na wariancji. Dokładniejsza, ale kosztowniejsza. Rozdziela wariancję wyjścia na wpływ poszczególnych parametrów ($S1$) i ich interakcje ($ST$).
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Wyniki - Metoda Morrisa}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Model ODE}\\
+            \includegraphics[width=\textwidth]{figures/morris_model_ode.png}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Model PDE}\\
+            \includegraphics[width=\textwidth]{figures/morris_model_pde.png}
+        \end{column}
+    \end{columns}
+    \begin{itemize}
+        \item \textbf{Wnioski:} W obu modelach parametr \textbf{q} (imitacja) wykazuje największy wpływ (najwyższe $\mu^*$) oraz znaczące interakcje (wysokie $\sigma$). Parametr \textbf{p} ma umiarkowany wpływ, a \textbf{D} (w modelu PDE) jest najmniej istotny.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Wyniki - Metoda Sobola}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Model ODE}\\
+            \includegraphics[width=\textwidth]{figures/sobol_model_ode.png}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Model PDE}\\
+            \includegraphics[width=\textwidth]{figures/sobol_model_pde.png}
+        \end{column}
+    \end{columns}
+    \begin{itemize}
+        \item \textbf{Potwierdzenie:} Analiza Sobola potwierdza wyniki z metody Morrisa.
+        \item \textbf{Wpływ całkowity (ST):} Parametr \textbf{q} ma dominujący wpływ.
+        \item \textbf{Interakcje:} Duża różnica między $ST$ a $S1$ dla parametru $q$ wskazuje na jego silne interakcje z innymi parametrami.
+        \item \textbf{Wpływ D:} Wpływ parametru $D$ na średnią wartość $U(t)$ jest marginalny.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Wnioski i Uproszczenie Modelu}
+    \textbf{Wnioski z Analizy Wrażliwości:}
+    \begin{itemize}
+        \item Parametr imitacji ($q$) jest kluczowym czynnikiem sterującym dynamiką średniego poziomu adaptacji $U(t)$.
+        \item Parametr innowacji ($p$) jest drugorzędny, ale wciąż istotny.
+        \item Parametr dyfuzji ($D$) ma znikomy wpływ na \textit{średnią} wartość w systemie, chociaż jest kluczowy dla dynamiki \textit{przestrzennej}.
+    \end{itemize}
+    \vspace{1cm}
+    \textbf{Propozycja uproszczenia modelu:}
+    \begin{itemize}
+        \item Model ODE jest już uproszczeniem, które ignoruje $D$. Analiza potwierdza, że jest to uzasadnione, jeśli interesuje nas tylko średnia wartość $U(t)$.
+        \item W modelu PDE, parametr $D$ można by ustalić na stałą wartość (np. jego średnią z badanego zakresu) bez dużej utraty dokładności dla tej konkretnej miary wyjściowej. To redukuje złożoność problemu o jeden wymiar.
+    \end{itemize}
+\end{frame}
+
 \end{document}
