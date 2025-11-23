@@ -323,4 +323,61 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \textbf{Wniosek:} Do złożonych modeli (PDE) przy ograniczonym czasie, proste metody stochastyczne (ABC) mogą być bardziej "bezpieczne" niż kosztowne metody optymalizacyjne, chyba że dysponujemy analitycznym gradientem (Adjoint method).
 \end{frame}
 
+% --- Zadanie 6 ---
+\section*{Zadanie 6 — Model PINN (Physics-Informed Neural Network)}
+
+\begin{frame}{Koncepcja PINN}
+\begin{itemize}
+  \item \textbf{Idea:} Połączenie danych obserwacyjnych z wiedzą fizyczną zawartą w równaniach różniczkowych (PDE).
+  \item \textbf{Architektura:} Sieć neuronowa $u_{NN}(x,t)$ aproksymująca rozwiązanie.
+  \item \textbf{Funkcja kosztu:} $L = L_{data} + L_{physics}$
+    \begin{itemize}
+      \item $L_{data} = \frac{1}{N_d} \sum (u_{NN}(x_i, t_i) - u_{obs})^2$ (dopasowanie do danych)
+      \item $L_{physics} = \frac{1}{N_f} \sum |f(u_{NN}(x_j, t_j))|^2$ (residuum PDE)
+    \end{itemize}
+  \item \textbf{Zaleta:} Możliwość trenowania na rzadkich danych i "uzupełniania" brakującej informacji fizyką.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementacja i Przebieg Treningu}
+\begin{itemize}
+  \item \textbf{Sieć:} MLP (4 warstwy ukryte po 40 neuronów, aktywacja Tanh).
+  \item \textbf{Dane:} 2000 losowych punktów z symulacji PDE (zasymilowane dane).
+  \item \textbf{Kolokacja:} 10000 punktów do obliczania residuum PDE.
+  \item \textbf{Czas treningu:} 62.63s (5000 epok).
+  \item \textbf{Końcowa strata (Loss):} 0.000044 (Data: 0.000040, Phy: 0.000003).
+\end{itemize}
+\begin{figure}
+  \centering
+  \includegraphics[height=0.4\textheight]{loss_history.png}
+  \caption{Historia funkcji kosztu (skala logarytmiczna).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Wyniki Rekonstrukcji Pola (PINN vs PDE)}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{pinn_results_heatmap.png}
+  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN oraz błędu absolutnego.}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Błąd średni (MAE):} 0.002412
+    \item \textbf{Błąd średniokwadratowy (RMSE):} 0.007519
+    \item Model bardzo dobrze odtwarza dynamikę przestrzenną, z niewielkimi błędami na froncie fali.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Porównanie Dynamiki Średniej (PINN vs PDE vs ODE)}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{pinn_vs_pde_vs_ode.png}
+  \caption{Porównanie średniej przestrzennej $u(t)$ dla trzech modeli.}
+\end{figure}
+\begin{itemize}
+  \item PINN (czerwona linia) idealnie pokrywa się z modelem PDE (niebieska linia).
+  \item Model ODE (zielona linia) stanowi dobre przybliżenie, ale PINN lepiej oddaje niuanse wynikające z przestrzennego rozkładu.
+  \item \textbf{Wnioski:} PINN skutecznie łączy zalety modelu opartego na danych i modelu fizycznego.
+\end{itemize}
+\end{frame}
+
 \end{document}
