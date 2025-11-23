@@ -257,4 +257,70 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
     \end{itemize}
 \end{frame}
 
+% --- Zadanie 5 ---
+\section*{Zadanie 5 — Asymilacja danych (ABC i 3D-Var)}
+
+\begin{frame}{Sformułowanie problemu asymilacji}
+\begin{itemize}
+  \item \textbf{Cel:} Odtworzenie parametrów modelu i stanu układu na podstawie zaszumionych obserwacji w oknie czasowym.
+  \item \textbf{Metody:}
+    \begin{itemize}
+      \item \textbf{ABC (Approximate Bayesian Computation):} Metoda bezgradientowa, polegająca na losowaniu parametrów i akceptacji tych, które generują wyniki bliskie obserwacjom. Odporna na lokalne minima, ale kosztowna obliczeniowo.
+      \item \textbf{3D-Var (Variational):} Minimalizacja funkcji kosztu $J(x) = ||y - H(x)||^2$. Szybka zbieżność przy dostępnych gradientach, ale ryzyko utknięcia w minimach lokalnych.
+    \end{itemize}
+  \item \textbf{Eksperyment:} Dane "rzeczywiste" z modelu PDE + szum Gaussowski. Testy dla modelu surogatowego ODE i pełnego PDE przy trzech budżetach czasowych (Low: 2s, Medium: 5s, High: 15s).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Wyniki asymilacji dla modelu ODE}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+  \item \textbf{3D-Var:} Bardzo szybka zbieżność (czas < 0.1s). Błąd RMSE minimalny ($\approx 0.006$). Metoda idealna dla prostego modelu ODE.
+  \item \textbf{ABC:} Wymaga wielu iteracji (tysiące). Błąd stabilny ($\approx 0.012$), ale wyższy niż w 3D-Var.
+  \item \textbf{Wnioski:} Dla tanich modeli numerycznych metody gradientowe (lub quasi-newtonowskie) są bezkonkurencyjne.
+\end{itemize}
+\column{0.5\textwidth}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{ode_assimilation_results_budget_high.png}
+  \caption{Wyniki asymilacji ODE (Budżet High). Czerwona linia (Var) idealnie pokrywa się z prawdą.}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Wyniki asymilacji dla modelu PDE}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+  \item \textbf{Wyzwanie:} Wysoki koszt pojedynczej symulacji PDE drastycznie ogranicza liczbę iteracji.
+  \item \textbf{ABC:} W budżecie 15s wykonano tylko ok. 76 iteracji. Mimo to, metoda znalazła przybliżone rozwiązanie (RMSE $\approx 0.026$).
+  \item \textbf{3D-Var:} Metoda nie zdążyła wykonać skutecznej optymalizacji w zadanym czasie (RMSE $\approx 0.248$ - poziom zgadywania). Numeryczne wyznaczanie gradientu jest zbyt kosztowne dla PDE przy krótkim budżecie.
+\end{itemize}
+\column{0.5\textwidth}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{pde_assimilation_results_center_budget_high.png}
+  \caption{Wyniki asymilacji PDE (Budżet High). ABC (niebieska) radzi sobie lepiej niż przerwana optymalizacja wariacyjna.}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Podsumowanie wyników (RMSE)}
+\begin{table}
+\centering
+\begin{tabular}{l|l|c|c|c}
+\textbf{Model} & \textbf{Metoda} & \textbf{Low (2s)} & \textbf{Medium (5s)} & \textbf{High (15s)} \\
+\hline
+ODE & ABC & 0.0127 & 0.0114 & 0.0117 \\
+ODE & 3D-Var & \textbf{0.0061} & \textbf{0.0061} & \textbf{0.0061} \\
+\hline
+PDE & ABC & \textbf{0.0247} & \textbf{0.0263} & \textbf{0.0263} \\
+PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
+\end{tabular}
+\caption{Porównanie błędów RMSE predykcji dla całej trajektorii.}
+\end{table}
+\textbf{Wniosek:} Do złożonych modeli (PDE) przy ograniczonym czasie, proste metody stochastyczne (ABC) mogą być bardziej "bezpieczne" niż kosztowne metody optymalizacyjne, chyba że dysponujemy analitycznym gradientem (Adjoint method).
+\end{frame}
+
 \end{document}
