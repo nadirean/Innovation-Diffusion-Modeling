@@ -380,4 +380,60 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \end{itemize}
 \end{frame}
 
+% --- Zadanie 7 ---
+\section*{Zadanie 7 — Supermodel (ODE) i SuperNet (PINN)}
+
+\begin{frame}{Koncepcja Supermodelowania}
+\begin{itemize}
+  \item \textbf{Problem:} Modele często mają niedokładne parametry.
+  \item \textbf{Rozwiązanie:} Połączenie wielu "niedoskonałych" modeli w jeden zespół (ensemble), który uczy się konsensusu.
+  \item \textbf{Supermodel ODE:} Zespół modeli ODE sprzężonych członem relaksacyjnym (nudging) do średniej trajektorii.
+  \item \textbf{SuperNet PINN:} Zespół sieci neuronowych uczonych równolegle z dodatkowym \textit{Coupling Loss}, wymuszającym spójność predykcji w punktach kolokacji.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Wyniki: Supermodel ODE}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{supermodel_ode_results.png}
+  \caption{Supermodel ODE (czerwona) vs Prawda (czarna) vs Pojedyncze modele (zielone).}
+\end{figure}
+\begin{itemize}
+    \item Pojedyncze modele z zaburzonymi parametrami (p, q) znacznie odbiegają od prawdy.
+    \item Sprzężony Supermodel skutecznie redukuje błąd, uśredniając błędy poszczególnych składowych.
+    \item \textbf{RMSE Single ODE:} 0.089763 $\to$ \textbf{RMSE Supermodel:} 0.016811.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Wyniki: SuperNet PINN}
+\begin{itemize}
+    \item \textbf{Trening:} 3 sieci PINN, 3000 epok, czas: 130.92s.
+    \item \textbf{Loss:} Total 0.000798, Coupling 0.000072.
+\end{itemize}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{supermodel_vs_supernet.png}
+  \caption{Porównanie dokładności: SuperNet PINN (niebieska) vs Supermodel ODE (czerwona).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Podsumowanie i Wnioski Końcowe}
+\begin{table}
+\centering
+\begin{tabular}{l|c}
+\textbf{Model} & \textbf{RMSE (względem PDE Mean)} \\
+\hline
+Single Perturbed ODE & 0.089763 \\
+Supermodel ODE & 0.016811 \\
+\textbf{SuperNet PINN} & \textbf{0.001654} \\
+\end{tabular}
+\caption{Zestawienie błędów rekonstrukcji średniej dynamiki.}
+\end{table}
+\begin{itemize}
+    \item \textbf{Supermodel ODE} poprawia wynik 5-krotnie względem pojedynczego modelu.
+    \item \textbf{SuperNet PINN} jest bezkonkurencyjny (poprawa 50-krotna), ponieważ korzysta dodatkowo z (rzadkich) danych pomiarowych, korygując błędy wynikające ze złych parametrów fizycznych.
+    \item Podejście zespołowe (Ensemble/Supermodeling) zwiększa odporność na błędy modelowania.
+\end{itemize}
+\end{frame}
+
 \end{document}
