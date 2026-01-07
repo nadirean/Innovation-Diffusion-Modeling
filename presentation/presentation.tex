@@ -341,42 +341,38 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 
 \begin{frame}{Implementacja i Przebieg Treningu}
 \begin{itemize}
-  \item \textbf{Sieć:} MLP (4 warstwy ukryte po 40 neuronów, aktywacja Tanh).
-  \item \textbf{Dane:} 2000 losowych punktów z symulacji PDE (zasymilowane dane).
-  \item \textbf{Kolokacja:} 10000 punktów do obliczania residuum PDE.
-  \item \textbf{Czas treningu:} 62.63s (5000 epok).
-  \item \textbf{Końcowa strata (Loss):} 0.000044 (Data: 0.000040, Phy: 0.000003).
+  \item \textbf{Konfiguracja (utrudniona):} $nx=150$, $\Delta t=5\cdot10^{-4}$, $N_{data}=1200$, $N_{f}=12000$, szum \texttt{gaussian\_mixture} 5\%.
+  \item \textbf{Sieć:} MLP (4 warstwy \texttimes{} 40, Tanh); \textbf{epoki:} 2000; \textbf{czas:} \(~41\,$s, CPU).
+  \item \textbf{Strata (ostatnia):} $L=0.57$ (Data $\approx0.052$, Physics $\approx0.26$) – fizyka musi kompensować głośne dane.
 \end{itemize}
 \begin{figure}
   \centering
-  \includegraphics[height=0.4\textheight]{loss_history.png}
-  \caption{Historia funkcji kosztu (skala logarytmiczna).}
+  \includegraphics[height=0.4\textheight]{../zad6/results/loss_history.png}
+  \caption{Historia funkcji kosztu (skala logarytmiczna). Widoczne oscylacje przy wysokim udziale szumu.}
 \end{figure}
 \end{frame}
 
 \begin{frame}{Wyniki Rekonstrukcji Pola (PINN vs PDE)}
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{pinn_results_heatmap.png}
-  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN oraz błędu absolutnego.}
+  \includegraphics[width=\textwidth]{../zad6/results/pinn_results_heatmap.png}
+  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN oraz błędu absolutnego. Błąd koncentruje się przy zlokalizowanej inicjalizacji.}
 \end{figure}
 \begin{itemize}
-    \item \textbf{Błąd średni (MAE):} 0.002412
-    \item \textbf{Błąd średniokwadratowy (RMSE):} 0.007519
-    \item Model bardzo dobrze odtwarza dynamikę przestrzenną, z niewielkimi błędami na froncie fali.
+    \item \textbf{MAE:} 0.1855 \qquad \textbf{RMSE:} 0.2359 \qquad \textbf{relL2:} 0.2647
+    \item Model jest wyraźnie obciążony szumem; największy błąd na froncie fali i w okolicy źródła inicjującego.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Porównanie Dynamiki Średniej (PINN vs PDE vs ODE)}
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{pinn_vs_pde_vs_ode.png}
-  \caption{Porównanie średniej przestrzennej $u(t)$ dla trzech modeli.}
+  \includegraphics[width=0.8\textwidth]{../zad6/results/pinn_vs_pde_vs_ode.png}
+  \caption{Porównanie średniej przestrzennej $u(t)$ dla trzech modeli (scenariusz zaszumiony).}
 \end{figure}
 \begin{itemize}
-  \item PINN (czerwona linia) idealnie pokrywa się z modelem PDE (niebieska linia).
-  \item Model ODE (zielona linia) stanowi dobre przybliżenie, ale PINN lepiej oddaje niuanse wynikające z przestrzennego rozkładu.
-  \item \textbf{Wnioski:} PINN skutecznie łączy zalety modelu opartego na danych i modelu fizycznego.
+  \item PINN (czerwona) jest spowolniony i zaniża trajektorię względem PDE (niebieska) oraz surogatu ODE (zielona).
+  \item Przy silnym szumie i ograniczonym czasie treningu fizyczny składnik nie dominuje nad błędami danych.
 \end{itemize}
 \end{frame}
 
@@ -395,25 +391,25 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \begin{frame}{Wyniki: Supermodel ODE}
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{supermodel_ode_results.png}
+  \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_ode_results.png}
   \caption{Supermodel ODE (czerwona) vs Prawda (czarna) vs Pojedyncze modele (zielone).}
 \end{figure}
 \begin{itemize}
     \item Pojedyncze modele z zaburzonymi parametrami (p, q) znacznie odbiegają od prawdy.
-    \item Sprzężony Supermodel skutecznie redukuje błąd, uśredniając błędy poszczególnych składowych.
-    \item \textbf{RMSE Single ODE:} 0.089763 $\to$ \textbf{RMSE Supermodel:} 0.016811.
+    \item Sprzężony Supermodel redukuje błąd, choć z lekkim przewyższeniem w fazie nasycenia.
+    \item \textbf{RMSE Single ODE:} 0.111640 \qquad \textbf{RMSE Supermodel:} 0.045112.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Wyniki: SuperNet PINN}
 \begin{itemize}
-    \item \textbf{Trening:} 3 sieci PINN, 3000 epok, czas: 130.92s.
-    \item \textbf{Loss:} Total 0.000798, Coupling 0.000072.
+    \item \textbf{Trening:} 3 sieci PINN, 2000 epok, czas: 71.68s (CPU), szum pomiarowy 5\% + Coupling Loss.
+    \item \textbf{Strata:} Total $\approx0.99$ (Coupling $\approx0.148$) — dominacja składowej danych przy zaszumionych pomiarach.
 \end{itemize}
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{supermodel_vs_supernet.png}
-  \caption{Porównanie dokładności: SuperNet PINN (niebieska) vs Supermodel ODE (czerwona).}
+  \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_vs_supernet.png}
+  \caption{Porównanie: SuperNet PINN (niebieska) vs Supermodel ODE (czerwona) vs Prawda (czarna) w scenariuszu zaszumionym.}
 \end{figure}
 \end{frame}
 
@@ -423,16 +419,16 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \begin{tabular}{l|c}
 \textbf{Model} & \textbf{RMSE (względem PDE Mean)} \\
 \hline
-Single Perturbed ODE & 0.089763 \\
-Supermodel ODE & 0.016811 \\
-\textbf{SuperNet PINN} & \textbf{0.001654} \\
+Single Perturbed ODE & 0.111640 \\
+Supermodel ODE & 0.045112 \\
+\textbf{SuperNet PINN} & \textbf{0.309868} \\
 \end{tabular}
 \caption{Zestawienie błędów rekonstrukcji średniej dynamiki.}
 \end{table}
 \begin{itemize}
-    \item \textbf{Supermodel ODE} poprawia wynik 5-krotnie względem pojedynczego modelu.
-    \item \textbf{SuperNet PINN} jest bezkonkurencyjny (poprawa 50-krotna), ponieważ korzysta dodatkowo z (rzadkich) danych pomiarowych, korygując błędy wynikające ze złych parametrów fizycznych.
-    \item Podejście zespołowe (Ensemble/Supermodeling) zwiększa odporność na błędy modelowania.
+  \item \textbf{Supermodel ODE} pozostaje najlepszym kompromisem przy zaszumionych danych.
+  \item \textbf{SuperNet PINN} w tym scenariuszu ulega nadmiernemu wpływowi szumu i sprzężenia, co prowadzi do dużego biasu.
+  \item Podejście ensemble zmniejsza wariancję, ale przy wysokim szumie wymaga lepszego ważenia danych vs. fizyki i couplingu.
 \end{itemize}
 \end{frame}
 
