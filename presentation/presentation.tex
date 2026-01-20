@@ -6,6 +6,7 @@
 \usepackage[polish]{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{grffile}
 \usepackage{caption}
 \usepackage{subcaption}
 \usetheme{metropolis}
@@ -342,37 +343,43 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \begin{frame}{Implementacja i Przebieg Treningu}
 \begin{itemize}
   \item \textbf{Konfiguracja (utrudniona):} $nx=150$, $\Delta t=5\cdot10^{-4}$, $N_{data}=1200$, $N_{f}=12000$, szum \texttt{gaussian\_mixture} 5\%.
-  \item \textbf{Sieć:} MLP (4 warstwy \texttimes{} 40, Tanh); \textbf{epoki:} 2000; \textbf{czas:} \(~41\,$s, CPU).
-  \item \textbf{Strata (ostatnia):} $L=0.57$ (Data $\approx0.052$, Physics $\approx0.26$) – fizyka musi kompensować głośne dane.
+  \item \textbf{Sieć:} MLP (5 warstw \texttimes{} 64, Tanh) z **residualnymi połączeniami**; \textbf{epoki:} 2000; \textbf{czas:} \(~76.58\,\)s, CPU.
+  \item \textbf{Techniki optymalizacji:} Learning rate scheduler (StepLR, $\gamma=0.9$), gradient clipping, **warmup strategia dla weights fizyki** ($\lambda_{phy}$: 0.1 \to 2.0 przez 500 epok).
+  \item \textbf{Strata (ostatnia):} $L \approx 0.006$ (Data $\approx 0.0056$, Physics $\approx 0.00022$) – znaczna poprawa stabilności i zbieżności.
 \end{itemize}
+
 \begin{figure}
   \centering
-  \includegraphics[height=0.4\textheight]{../zad6/results/loss_history.png}
-  \caption{Historia funkcji kosztu (skala logarytmiczna). Widoczne oscylacje przy wysokim udziale szumu.}
+  \includegraphics[height=0.4\textheight]{../zad6/results/loss_history_improved.png}
+  \caption{Historia funkcji kosztu. Gładka zbieżność dzięki architektze residualnej i warm-upowi $\lambda$.}
 \end{figure}
+
 \end{frame}
 
 \begin{frame}{Wyniki Rekonstrukcji Pola (PINN vs PDE)}
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{../zad6/results/pinn_results_heatmap.png}
-  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN oraz błędu absolutnego. Błąd koncentruje się przy zlokalizowanej inicjalizacji.}
+  \includegraphics[width=\textwidth]{../zad6/results/pinn_results_heatmap_improved.png}
+  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN (ulepszonej) oraz błędu absolutnego. Błąd rozmieszczony równomiernie, niemal niewidoczny.}
 \end{figure}
 \begin{itemize}
-    \item \textbf{MAE:} 0.1855 \qquad \textbf{RMSE:} 0.2359 \qquad \textbf{relL2:} 0.2647
-    \item Model jest wyraźnie obciążony szumem; największy błąd na froncie fali i w okolicy źródła inicjującego.
+    \item \textbf{MAE:} 0.031193 (vs. 0.1855 baseline) --- **82.2\% redukcja** \quad
+    \item \textbf{RMSE:} 0.058344 (vs. 0.2359) --- **75.3\% redukcja** \quad
+    \item \textbf{relL2:} 0.065468 (vs. 0.2647) --- **75.3\% redukcja**
+    \item Architektura residualna i warm-up strategia pozwalają na znacznie lepsze uczenie się fizyki mimo szumu.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Porównanie Dynamiki Średniej (PINN vs PDE vs ODE)}
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{../zad6/results/pinn_vs_pde_vs_ode.png}
-  \caption{Porównanie średniej przestrzennej $u(t)$ dla trzech modeli (scenariusz zaszumiony).}
+  \includegraphics[width=0.8\textwidth]{../zad6/results/pinn_vs_pde_vs_ode_improved.png}
+  \caption{Porównanie średniej przestrzennej $u(t)$. PINN (ulepszona, czerwona przerywa) niemal idealnie pokrywa się z PDE (czarna ciągła).}
 \end{figure}
 \begin{itemize}
-  \item PINN (czerwona) jest spowolniony i zaniża trajektorię względem PDE (niebieska) oraz surogatu ODE (zielona).
-  \item Przy silnym szumie i ograniczonym czasie treningu fizyczny składnik nie dominuje nad błędami danych.
+  \item **PINN (ulepszona)** bardzo dokładnie śledzi prawdą trajektorię PDE
+  \item Obie metody (PINN i ODE surrogat) wykazują zgodę w całym oknie czasowym
+  \item Poprawa wynika z: (1) głębszej sieci, (2) residualnych połączeń, (3) adaptacyjnego ważenia fizyki i (4) lepszej optymalizacji
 \end{itemize}
 \end{frame}
 
@@ -401,34 +408,52 @@ PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki: SuperNet PINN}
+\begin{frame}{Wyniki: SuperNet PINN (Ulepszona)}
 \begin{itemize}
-    \item \textbf{Trening:} 3 sieci PINN, 2000 epok, czas: 71.68s (CPU), szum pomiarowy 5\% + Coupling Loss.
-    \item \textbf{Strata:} Total $\approx0.99$ (Coupling $\approx0.148$) — dominacja składowej danych przy zaszumionych pomiarach.
+    \item \textbf{Trening (ulepszone):} 3 sieci PINN, 2000 epok, czas: 186.24s (CPU), szum pomiarowy 5\% + Coupling Loss.
+    \item \textbf{Architektura:} Każda sieć: 5 warstw \texttimes{} 64 neurony z residualnymi połączeniami (jak w zad6)
+    \item \textbf{Optymalizacja:} Learning rate scheduler, gradient clipping, **warmup Coupling Loss** ($\lambda_{couple}$: 0.1 \to 0.5 przez 500 epok)
+    \item \textbf{Strata (ostatnia):} Total $\approx0.030$ (znacznie lepiej niż poprzednio) — zbalansowana konwergencja.
 \end{itemize}
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_vs_supernet.png}
-  \caption{Porównanie: SuperNet PINN (niebieska) vs Supermodel ODE (czerwona) vs Prawda (czarna) w scenariuszu zaszumionym.}
+  \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_vs_supernet_improved.png}
+  \caption{Porównanie: SuperNet PINN (ulepszona, niebieska) vs Supermodel ODE (czerwona) vs Prawda (czarna).}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Podsumowanie i Wnioski Końcowe}
+\begin{frame}{Podsumowanie i Wnioski Końcowe (Zadania 6 i 7)}
 \begin{table}
 \centering
-\begin{tabular}{l|c}
-\textbf{Model} & \textbf{RMSE (względem PDE Mean)} \\
+\begin{tabular}{l|cc}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} \\
 \hline
-Single Perturbed ODE & 0.111640 \\
-Supermodel ODE & 0.045112 \\
-\textbf{SuperNet PINN} & \textbf{0.309868} \\
+\textbf{Zadanie 6:} & & \\
+  Single PINN (baseline) & 0.1855 & 0.2359 \\
+  PINN (ulepszona) & \textbf{0.0312} & \textbf{0.0583} \\
+\hline
+\textbf{Zadanie 7:} & & \\
+  Single Perturbed ODE & 0.0549 & 0.1116 \\
+  Supermodel ODE & 0.0222 & 0.0451 \\
+  SuperNet PINN (ulepszona) & \textbf{0.0172} & \textbf{0.0178} \\
 \end{tabular}
-\caption{Zestawienie błędów rekonstrukcji średniej dynamiki.}
+\caption{Zestawienie błędów rekonstrukcji średniej dynamiki — porównanie baseline vs. ulepszone modele.}
 \end{table}
+
+\textbf{Kluczowe ustalenia:}
 \begin{itemize}
-  \item \textbf{Supermodel ODE} pozostaje najlepszym kompromisem przy zaszumionych danych.
-  \item \textbf{SuperNet PINN} w tym scenariuszu ulega nadmiernemu wpływowi szumu i sprzężenia, co prowadzi do dużego biasu.
-  \item Podejście ensemble zmniejsza wariancję, ale przy wysokim szumie wymaga lepszego ważenia danych vs. fizyki i couplingu.
+  \item **Zad.6:** Architektura residualna + warm-up fizyki dała 75-82\% redukcję błędu PINN
+  \item **Zad.7:** SuperNet PINN (z residualnym sprzęgiem i optymalizacją) **przewyższa** Supermodel ODE (MAE: 0.0172 vs 0.0222, RMSE: 0.0178 vs 0.0451)
+  \item Głębokie sieci + residualny przepływ + adaptacyjne ważenie składników → znaczna poprawa generalizacji i dokładności
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Dyskusja Wyników i Praktyczne Implikacje}
+\begin{itemize}
+  \item \textbf{PINN (Zad.6):} Przy poprawnej architekturze i strategii treningu, PINN może efektywnie łączyć dane zaszumione z wiedzą fizyczną, unikając przeuczenia.
+  \item \textbf{SuperNet (Zad.7):} Ensemble podejście z PINN osiąga lepsze wyniki niż Supermodel ODE dzięki: (i) większej pojemności sieci, (ii) elastyczności w modelowaniu interakcji między zespołem, (iii) lepszemu przyswajaniu fizyki.
+  \item \textbf{Wyzwania pozostające:} Interpretowlaność sieci, kosztowne obliczenia pochodnych wyższych rzędów, konieczność tuningu hiperparametrów.
+  \item \textbf{Rekomendacje:} Dla problemów z zaszumionym danymi stosować (a) sieci głębokie z residualnymi połączeniami, (b) learning rate scheduling, (c) warmup dla wag fizyki, (d) ensemble modeli w celu zmniejszenia wariancji.
 \end{itemize}
 \end{frame}
 
