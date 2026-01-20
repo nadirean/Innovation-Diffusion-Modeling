@@ -221,3 +221,5 @@ materialy/
 *.nav
 *.snm
 *.vrb
+*.bbl
+*.blg
