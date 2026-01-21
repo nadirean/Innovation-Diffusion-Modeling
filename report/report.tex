@@ -21,9 +21,6 @@
 Modeling and simulation of a one-dimensional reaction--diffusion system comparing classical solvers, sensitivity analysis, data assimilation, PINN and SuperNet methods, with key metrics and runtimes. Main findings: PINNs perform well with sparse measurements and SuperNet improves robustness to parameter uncertainty.
 \end{abstract}
 
-\tableofcontents
-\clearpage
-
 \section{Introduction and Problem Statement}
 Reaction--diffusion equations combine local kinetics with spatial transport and model many biological and chemical systems.
 
@@ -222,6 +219,13 @@ The project highlights trade-offs: lightweight NNs suit fast inference, while PI
 
 \subsection*{Limitations and Future Work}
 Limitations include moderate parameter/grid ranges ($n_x \le 200$), CPU-only tests, and limited hyperparameter tuning. Future work: scale to GPU, study randomness effects, explore adaptive loss/optimization for PINNs and compare with adaptive numerical methods.
+
+\section{Authors' contributions}
+This project was produced through collaboration between the human authors and an AI language model. Task division:
+\begin{itemize}
+  \item \textbf{Human:} experiment conception, experiments conducting, results analysis, validation, and report preparation.
+  \item \textbf{AI (GitHub Copilot):} editorial assistance, code and implementation, drafting and formatting method descriptions.
+\end{itemize}
 
 \bibliographystyle{plain}
 \nocite{*}
