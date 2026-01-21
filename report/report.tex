@@ -1,7 +1,7 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[polish]{babel}
+\usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
@@ -11,68 +11,68 @@
 \usepackage{float}
 \geometry{margin=3cm}
 
-\title{A11 — Dyfuzja innowacji i popytu na rynku}
-\author{Wojciech Bartoszek \ Łukasz Checiak}
+\title{A11 — Diffusion of Innovation and Market Demand}
+\author{Wojciech Bartoszek \\ \L{}ukasz Checiak}
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-Niniejszy raport dokumentuje realizację cyklu zadań projektowych koncentrujących się na modelowaniu i symulacji nieliniowych układów dynamicznych opisywanych równaniami różniczkowymi cząstkowymi (PDE) i zwyczajnymi (ODE). Praca obejmuje pełne spektrum modelowania: od klasycznej dyskretyzacji numerycznej i analizy stabilności (zadanie 2), przez analizę wrażliwości parametrów (zadanie 4) i asymilację danych (zadanie 5), aż po zaawansowane metody uczenia maszynowego informed by physics (zadanie 6) oraz koncepcję SuperNet (zadanie 7). Zrealizowano również pomiary wydajnościowe (zadanie 3). Wyniki wskazują na wysoką skuteczność sieci PINN w aproksymacji rozwiązań przy ograniczonej liczbie danych pomiarowych oraz na korzyści płynące z podejścia zespołowego (SuperNet) w modelowaniu systemów o niepewnych parametrach.
+This report documents the execution of a project series focusing on modeling and simulation of nonlinear dynamical systems described by partial (PDE) and ordinary (ODE) differential equations. The work covers the full spectrum of modeling: from classical numerical discretization and stability analysis (Task 2), through parameter sensitivity analysis (Task 4) and data assimilation (Task 5), to advanced physics-informed machine learning methods (Task 6) and the SuperNet concept (Task 7). Performance measurements were also carried out (Task 3). Results indicate high effectiveness of PINNs in approximating solutions with a limited number of measurement points and show the benefits of ensemble-style approaches (SuperNet) when modeling systems with uncertain parameters.
 \end{abstract}
 
 \clearpage
 \tableofcontents
 \clearpage
 
-\section{Wstęp i sformułowanie problemu}
-Modelowanie systemów złożonych w biologii czy chemii często prowadzi do równań reakcyjno-dyfuzyjnych, które łączą lokalną kinetykę (reakcję) z przestrzennym transportem masy (dyfuzją).
+\section{Introduction and Problem Statement}
+Modeling complex systems in biology or chemistry often leads to reaction-diffusion equations that combine local kinetics (reaction) with spatial mass transport (diffusion).
 
-\subsection{Model matematyczny}
-Głównym obiektem badań w projekcie jest jednowymiarowe równanie paraboliczne:
+\subsection{Mathematical Model}
+The main object of study in the project is a one-dimensional parabolic equation:
 \begin{equation}
     \frac{\partial u}{\partial t} = D \frac{\partial^2 u}{\partial x^2} + R(u), \quad x \in [0, 1], \ t \in [0, T]
 \end{equation}
-gdzie $u(x,t)$ reprezentuje gęstość lub stężenie substancji. Człon reakcyjny $R(u)$ jest nieliniowy i dany wzorem:
+where $u(x,t)$ represents a density or concentration of a substance. The reaction term $R(u)$ is nonlinear and given by:
 \begin{equation}
     R(u) = (p + q u)(1 - u)
 \end{equation}
-Parametry $D, p, q$ sterują odpowiednio siłą dyfuzji, tempem wzrostu podstawowego oraz nieliniowym efektem autokatalitycznym.
+Parameters $D, p, q$ control diffusion strength, the baseline growth rate, and the nonlinear autocatalytic effect, respectively.
 
-\subsection{Warunki brzegowe i początkowe}
-Dla zapewnienia unikalności rozwiązania oraz modelowania układu izolowanego przyjęto jednorodne warunki brzegowe Neumanna:
+\subsection{Boundary and Initial Conditions}
+To ensure uniqueness of the solution and to model an isolated system, homogeneous Neumann boundary conditions were used:
 \begin{equation}
     \left. \frac{\partial u}{\partial x} \right|_{x=0} = 0, \quad \left. \frac{\partial u}{\partial x} \right|_{x=1} = 0
 \end{equation}
-Warunek początkowy $u(x,0)$ zadawano w trzech wariantach:
+The initial condition $u(x,0)$ was specified in three variants:
 \begin{itemize}
-    \item \texttt{gaussian}: profil Gaussa centrowany w $0.5$ (modelowanie lokalnego zarzewia),
-    \item \texttt{localized}: prostokątny impuls w środku domeny,
-    \item \texttt{small\_random}: losowe zaburzenia o małej amplitudzie, testujące stabilność stanu stacjonarnego.
+    \item \texttt{gaussian}: a Gaussian profile centered at $0.5$ (modeling a local seed),
+    \item \texttt{localized}: a rectangular pulse in the center of the domain,
+    \item \texttt{small\_random}: small-amplitude random perturbations to test stability of the steady state.
 \end{itemize}
 
-\section{Zadanie 2: Klasyczne metody numeryczne}
-\subsection{Dyskretyzacja przestrzenna}
-Zastosowano metodę linii (Method of Lines). Domenę przestrzenną podzielono na $N_x$ punktów z krokiem $\Delta x = 1/(N_x-1)$. Operator Laplace'a przybliżono ilorazem różnicowym drugiego rzędu:
+\section{Task 2: Classical Numerical Methods}
+\subsection{Spatial Discretization}
+The Method of Lines was applied. The spatial domain was divided into $N_x$ points with step $\Delta x = 1/(N_x-1)$. The Laplace operator was approximated by a second-order finite difference:
 \begin{equation}
     u_{xx} \approx \frac{u_{i-1} - 2u_i + u_{i+1}}{\Delta x^2}
 \end{equation}
-Warunki Neumanna zaimplementowano poprzez modyfikację macierzy operatora (odbicie wartości na brzegach), co prowadzi do rzadkiej macierzy trójdiagonalnej. W kodzie użyto formatu \texttt{scipy.sparse.csr\_matrix} dla efektywności obliczeniowej.
+Neumann boundary conditions were implemented by modifying the operator matrix (reflecting boundary values), which leads to a sparse tridiagonal matrix. The code uses the \texttt{scipy.sparse.csr\_matrix} format for computational efficiency.
 
-\subsection{Metody całkowania w czasie}
-Zaimplementowano trzy schematy o różnej charakterystyce:
+\subsection{Time Integration Methods}
+Three schemes with different characteristics were implemented:
 \begin{enumerate}
-    \item \textbf{Explicit (FE)}: Metoda jawna Eulera. Prosta w implementacji, ale ograniczona warunkiem stabilności Couranta (CFL): $\Delta t \le \frac{\Delta x^2}{2D}$. Przy gęstych siatkach wymaga bardzo małych kroków.
-    \item \textbf{Semi-implicit}: Dyfuzja jest traktowana niejawnie (Backward Euler), a reakcja jawnie. Pozwala to na uniknięcie sztywnego ograniczenia $\Delta t$ pochodzącego od dyfuzji. Wymaga rozwiązania układu równań liniowych $(I - \Delta t D A)u^{n+1} = u^n + \Delta t R(u^n)$.
-    \item \textbf{Crank-Nicolson (CN)}: Metoda drugiego rzędu dokładności w czasie. Średnia z kroku jawnego i niejawnego dla dyfuzji. Jest bezwarunkowo stabilna dla problemów liniowych.
+    \item \textbf{Explicit (FE)}: Forward Euler scheme. Simple to implement but limited by the Courant–Friedrichs–Lewy (CFL) stability condition: $\Delta t \le \frac{\Delta x^2}{2D}$. For fine grids this requires very small time steps.
+    \item \textbf{Semi-implicit}: Diffusion is treated implicitly (Backward Euler) while reaction is explicit. This avoids the stiff time-step restriction from diffusion. It requires solving a linear system $(I - \Delta t D A)u^{n+1} = u^n + \Delta t R(u^n)$.
+    \item \textbf{Crank–Nicolson (CN)}: Second-order accurate in time. Uses the average of explicit and implicit steps for diffusion. It is unconditionally stable for linear problems.
 \end{enumerate}
 
-\subsection{Analiza wyników i wydajności}
-Pomiarów dokonano dla $n_x \in \{50, 100, 200\}$. Dane w Tabeli \ref{tab:timings-summary} i \ref{tab:timings-nx} pokazują, że metoda jawna jest najszybsza pod warunkiem zachowania stabilności, jednak koszty rozwiązywania układów rzadkich w CN są akceptowalne i rosną niemal liniowo z $n_x$.
+\subsection{Results and Performance Analysis}
+Measurements were taken for $n_x \in \{50, 100, 200\}$. Data in Tables \ref{tab:timings-summary} and \ref{tab:timings-nx} show that the explicit method is the fastest provided stability is maintained, while the cost of solving sparse systems in CN is acceptable and grows almost linearly with $n_x$.
 
 \begin{table}[h]
 \centering
-\caption{Podsumowanie czasów (s) dla poszczególnych solverów}
+\caption{Summary of timings (s) for each solver}
 \label{tab:timings-summary}
 \begin{tabular}{lrrrr}
 \toprule
@@ -87,7 +87,7 @@ crank-nicolson & 18 & 0.035034 & 0.036128 & 0.017829--0.059576 \\
 
 \begin{table}[h]
 \centering
-\caption{Średnie czasy (s) w funkcji \texttt{nx} dla każdego solvera}
+\caption{Average times (s) as a function of \texttt{nx} for each solver}
 \label{tab:timings-nx}
 \begin{tabular}{lrrr}
 \toprule
@@ -100,65 +100,65 @@ crank-nicolson & 0.027105 & 0.033283 & 0.044714 \\
 \end{tabular}
 \end{table}
 
-\subsection{Przykładowe profile rozwiązania}
-Poniżej pokazano przykładowe profile końcowe (dla wybranych parametrów) dla trzech solverów.
+\subsection{Example Solution Profiles}
+Below are example final profiles (for selected parameters) for the three solvers.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.32\textwidth]{../zad2/results/explicit_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
 \includegraphics[width=0.32\textwidth]{../zad2/results/semi-implicit_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
 \includegraphics[width=0.32\textwidth]{../zad2/results/crank-nicolson_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
-\caption{Porównanie końcowych profilów dla solverów \texttt{explicit}, \texttt{semi-implicit} i \texttt{crank-nicolson}.}
+\caption{Comparison of final profiles for the \texttt{explicit}, \texttt{semi-implicit} and \texttt{crank-nicolson} solvers.}
 \end{figure}
 
-\section{Zadanie 3: Inferencja i modele NN}
-Wykonano testy porównawcze czasu predykcji. Model ODE, mimo prostoty, wymaga numerycznego całkowania (np. RK45), co generuje narzut czasowy (\SI{1.29}{ms}). Prosta sieć neuronowa (feed-forward) przewidująca stan następny w jednym przejściu (inferencja) osiąga \SI{0.87}{ms}, co stanowi oszczędność rzędu 30\%. Sugeruje to potencjał metod maszynowych w systemach sterowania w czasie rzeczywistym.
+\section{Task 3: Inference and NN Models}
+Comparative tests of prediction time were performed. The ODE model, despite its simplicity, requires numerical integration (e.g., RK45), which adds overhead (\SI{1.29}{ms}). A simple feed-forward neural network predicting the next state in one pass achieves \SI{0.87}{ms}, representing about 30\% savings. This suggests potential of machine learning methods for real-time control systems.
 
-\section{Zadanie 4: Analiza wrażliwości (SA)}
-Przeprowadzono analizę wpływu parametrów $D, p, q$ na zachowanie systemu.
+\section{Task 4: Sensitivity Analysis (SA)}
+An analysis of the impact of parameters $D, p, q$ on system behavior was conducted.
 \begin{itemize}
-    \item \textbf{Metoda Morrisa}: Szybki screening parametrów. Pozwolił stwierdzić, że parametr $q$ (autokataliza) ma najbardziej nieliniowy i dominujący wpływ na końcowy profil $u(x,T)$.
-    \item \textbf{Analiza Sobola}: Metoda oparta na dekompozycji wariancji. Wyznaczyła indeksy pierwszego rzędu, potwierdzając, że $D$ odpowiada za wygładzanie profilu, ale to interakcje między $p$ i $q$ decydują o punkcie bifurkacji układu.
+    \item \textbf{Morris method}: A fast screening method. It revealed that parameter $q$ (autocatalysis) has the most nonlinear and dominant influence on the final profile $u(x,T)$.
+    \item \textbf{Sobol analysis}: A variance-based decomposition method. It computed first-order indices and confirmed that $D$ is responsible for smoothing the profile, while interactions between $p$ and $q$ determine the system's bifurcation point.
 \end{itemize}
 
-\section{Zadanie 5: Asymilacja danych (DA)}
-Zadanie to dotyczyło odtwarzania stanu układu na podstawie zaszumionych pomiarów.
+\section{Task 5: Data Assimilation (DA)}
+This task concerned reconstructing the system state from noisy measurements.
 \begin{itemize}
-    \item \textbf{ABC (Approximate Bayesian Computation)}: Metoda typu Likelihood-free. Pozwoliła na estymację rozkładów a posteriori dla $p$ i $q$. Metoda jest stabilna, ale kosztowna obliczeniowo (wymaga tysięcy symulacji).
-    \item \textbf{3D-Var}: Metoda wariacyjna minimalizująca funkcjonalność kosztu łączącą odchylenie od pomiaru i od operatora fizycznego. 3D-Var okazał się znacznie szybszy od ABC, osiągając dobrą predykcję pola $u(x,t)$ nawet przy dużym szumie (SNR < 10dB).
+    \item \textbf{ABC (Approximate Bayesian Computation)}: A likelihood-free method. It enabled estimation of posterior distributions for $p$ and $q$. The method is stable but computationally expensive (requires thousands of simulations).
+    \item \textbf{3D-Var}: A variational method minimizing a cost functional combining deviation from measurements and from the physical operator. 3D-Var proved much faster than ABC, achieving good field prediction $u(x,t)$ even with high noise (SNR < 10dB).
 \end{itemize}
 
-\section{Zadanie 6: PINN -- Physics-Informed Neural Networks}
-\subsection{Architektura i proces uczenia}
-Model PINN zaprojektowano jako sieć MLP o 5 warstwach (64 neurony każda) z połączeniami rezydualnymi (Residual Blocks) co dwie warstwy. Wykorzystano funkcję aktywacji \texttt{Tanh}, zapewniającą ciągłość pochodnych wysokiego rzędu niezbędnych do obliczenia residuum PDE.
+\section{Task 6: PINN -- Physics-Informed Neural Networks}
+\subsection{Architecture and Training Procedure}
+The PINN model was designed as an MLP with 5 layers (64 neurons each) and residual connections (Residual Blocks) every two layers. The \texttt{Tanh} activation was used to ensure continuity of high-order derivatives needed for computing the PDE residual.
 
-\subsection{Funkcja straty (Loss Function)}
-Kluczem PINN jest kompozytowa funkcja straty:
+\subsection{Loss Function}
+The key component of a PINN is a composite loss function:
 \begin{equation}
     L = L_{data} + \lambda_{phy} L_{phy} + \lambda_{bc} L_{bc}
 \end{equation}
-gdzie:
+where:
 \begin{itemize}
-    \item $L_{data} = \text{MSE}$ na rzadkich punktach pomiarowych (asymilacja danych).
-    \item $L_{phy} = \frac{1}{N_c} \sum |u_t - D u_{xx} - R(u)|^2$ obliczane w punktach kolokacji metodą \texttt{autograd}.
-    \item $L_{bc}$ wymusza warunki brzegowe Neumanna.
+    \item $L_{data} = \text{MSE}$ on sparse measurement points (data assimilation).
+    \item $L_{phy} = \frac{1}{N_c} \sum |u_t - D u_{xx} - R(u)|^2$ computed at collocation points using \texttt{autograd}.
+    \item $L_{bc}$ enforces Neumann boundary conditions.
 \end{itemize}
-Wprowadzono \textbf{Dynamic Weight Scheduling}: $\lambda_{phy}$ rośnie w trakcie treningu (od $0.1$ do $2.0$), co pozwala sieci najpierw nauczyć się ogólnego kształtu danych, a potem precyzyjnie dopasować się do fizyki.
+A \textbf{Dynamic Weight Scheduling} was introduced: $\lambda_{phy}$ increases during training (from $0.1$ to $2.0$), allowing the network to first learn the general data shape and then precisely fit the physics.
 
-\subsection{Wyniki i metryki}
-W eksperymencie PINN trenowano sieć przez 2000 epok. Proces treningu monitorowano za pomocą historii funkcji kosztu. Wyniki metryk podsumowano w Tabeli \ref{tab:pinn-metrics}.
+\subsection{Results and Metrics}
+In the experiment the PINN was trained for 2000 epochs. Training was monitored via the loss history. Training metrics are summarized in Table \ref{tab:pinn-metrics}.
 
 \begin{table}[h]
 \centering
-\caption{Metryki treningowe PINN (zadanie 6)}
+\caption{PINN training metrics (Task 6)}
 \label{tab:pinn-metrics}
 \begin{tabular}{lrr}
 \toprule
-Metryka & Wartość \\
+Metric & Value \\
 \midrule
 MAE & 0.031193 \\
 RMSE & 0.058344 \\
 relL2 & 0.065468 \\
-Czas treningu & 76.58 s \\
+Training time & 76.58 s \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -167,23 +167,23 @@ Czas treningu & 76.58 s \\
 \centering
 \includegraphics[width=0.48\textwidth]{../zad6/results/pinn_results_heatmap_improved.png}
 \includegraphics[width=0.48\textwidth]{../zad6/results/pinn_vs_pde_vs_ode_improved.png}
-\caption{Wyniki eksperymentu PINN: po lewej mapa błędów, po prawej porównanie rozwiązań.}
+\caption{PINN experiment results: left heatmap of errors, right comparison of solutions.}
 \end{figure}
 
-\section{Zadanie 7: SuperNet i Modelowanie Zespołowe}
-\subsection{Koncepcja SuperModelu}
-W zadaniu 7 rozważono układ, w którym parametry fizyczne są znane z pewnym błędem lub pochodzą z różnych źródeł. SuperModel ODE składa się z zespołu modeli połączonych członem sprzęgającym (coupling):
+\section{Task 7: SuperNet and Ensemble Modeling}
+\subsection{SuperModel Concept}
+In Task 7 we considered a system where physical parameters are known with some error or come from different sources. The SuperModel ODE consists of an ensemble of models coupled by a coupling term:
 \begin{equation}
     \dot{u}_i = f(u_i; \theta_i) + C(\bar{u} - u_i)
 \end{equation}
-gdzie $\bar{u}$ to średnia z zespołu. Taka synchronizacja pozwala na stabilniejszą predykcję niż każdy model z osobna.
+where $\bar{u}$ is the ensemble mean. Such synchronization allows more stable prediction than any model alone.
 
 \subsection{SuperNet PINN}
-Zaimplementowano sieć \textbf{SuperNet PINN}, która uczy się reprezentować całą rodzinę rozwiązań. Sieć wykazuje dużą odporność na perturbacje parametrów wejściowych dzięki "wyczuciu" ogólnej struktury operatora różniczkowego.
+A \textbf{SuperNet PINN} was implemented to learn to represent the entire family of solutions. The network shows strong robustness to input parameter perturbations due to its ability to capture the general structure of the differential operator.
 
 \begin{table}[h]
 \centering
-\caption{Porównanie metryk: SuperModel vs SuperNet (zadanie 7)}
+\caption{Metric comparison: SuperModel vs SuperNet (Task 7)}
 \label{tab:supernet-metrics}
 \begin{tabular}{lrr}
 \toprule
@@ -195,51 +195,51 @@ Single Perturbed ODE & 0.054936 & 0.111640 \\
 \bottomrule
 \end{tabular}
 \vspace{4pt}
-\par Czas treningu (SuperNet): 186.24 s
+\par Training time (SuperNet): 186.24 s
 \end{table}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.49\textwidth]{../zad7/results/supermodel_vs_supernet_improved.png}
 \includegraphics[width=0.49\textwidth]{../zad7/results/supernet_loss_history_improved.png}
-\caption{Porównanie jakości predykcji SuperModel vs SuperNet oraz historia utraty dla SuperNet.}
+\caption{Comparison of prediction quality: SuperModel vs SuperNet and SuperNet loss history.}
 \end{figure}
 
-\section{Szczegółowe zestawienie wyników}
-Poniżej przedstawiono zbiorcze zestawienie wybranych metryk i czasów pomiarów, ułatwiające szybkie porównanie rezultatów uzyskanych w różnych zadaniach.
+\section{Detailed Summary of Results}
+Below is a consolidated summary of selected metrics and timing measurements to facilitate quick comparison of results obtained across tasks.
 
 \begin{table}[h]
 \centering
-\caption{Zestawienie kluczowych wyników projektu}
+\caption{Summary of key project results}
 \begin{tabular}{lrrl}
 \toprule
-Opis & Wartość 1 & Wartość 2 & Uwagi \\
+Description & Value 1 & Value 2 & Notes \\
 \midrule
-Zadanie 2: explicit (średni czas) & 0.004796 s &  & średnia z 18 prób \\
-Zadanie 2: semi-implicit (średni czas) & 0.032856 s &  &  \\
-Zadanie 2: crank-nicolson (średni czas) & 0.035034 s &  &  \\
-Zadanie 3: ODE (czas inferencji) & 1.2921 ms &  & czas na próbkę \\
-Zadanie 3: prosty NN (czas inferencji) & 0.8670 ms &  & czas na próbkę \\
-Zadanie 6: PINN (MAE / RMSE) & 0.031193 & 0.058344 & czas tren. 76.58 s \\
-Zadanie 7: SuperNet (MAE / RMSE) & 0.017152 & 0.017845 & czas tren. 186.24 s \\
+Task 2: explicit (average time) & 0.004796 s &  & average over 18 runs \\
+Task 2: semi-implicit (average time) & 0.032856 s &  &  \\
+Task 2: crank-nicolson (average time) & 0.035034 s &  &  \\
+Task 3: ODE (inference time) & 1.2921 ms &  & per-sample time \\
+Task 3: simple NN (inference time) & 0.8670 ms &  & per-sample time \\
+Task 6: PINN (MAE / RMSE) & 0.031193 & 0.058344 & training time 76.58 s \\
+Task 7: SuperNet (MAE / RMSE) & 0.017152 & 0.017845 & training time 186.24 s \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Dyskusja}
-Główne obserwacje:
+\section{Discussion}
+Key observations:
 \begin{itemize}
-\item Metody jawne (explicit) są bardzo szybkie dla małych rozmiarów siatki, ale w praktyce ich stabilność ogranicza krok czasowy (CFL) — w eksperymentach metoda jawna dawała najkrótszy czas średni.
-\item Schematy implicite (CN i półimplicit) są wolniejsze, ale bardziej stabilne i pozwalają na większe kroki czasowe bez utraty stabilności.
-\item PINN-y osiągnęły przyzwoitą dokładność (MAE~0.03), co jest konkurencyjne względem klasycznych rozwiązań dla pewnych zadań; ich koszt treningowy jednak jest wyższy niż prostych solverów PDE.
-\item SuperNet PINN poprawia średni błąd predykcji w porównaniu do pojedynczego zaburzonego modelu ODE, co pokazuje, że uczenie parametryczne może zwiększać odporność i dokładność.
+\item Explicit methods are very fast for small grid sizes, but in practice their stability constrains the time step (CFL) — in experiments the explicit method yielded the shortest average time.
+\item Implicit schemes (CN and semi-implicit) are slower but more stable and allow larger time steps without loss of stability.
+\item PINNs achieved reasonable accuracy (MAE~0.03), which is competitive with classical solvers for certain tasks; however, their training cost is higher than simple PDE solvers.
+\item SuperNet PINN reduces average prediction error compared to a single perturbed ODE model, showing that parametric learning can increase robustness and accuracy.
 \end{itemize}
 
-\section{Wnioski}
-Projekt pokazał praktyczne różnice między podejściami numerycznymi i uczeniem maszynowym w kontekście równań różniczkowych. Dla zadań wymagających szybkości inferencji warto rozważyć lekkie modele NN, natomiast dla wysokiej dokładności i elastyczności modelowania parametrów rozważne jest zastosowanie PINN / SuperNet.
+\section{Conclusions}
+The project demonstrated practical differences between numerical approaches and machine learning methods in the context of differential equations. For tasks requiring fast inference it is worth considering lightweight NN models, while for high accuracy and flexible parameter modeling, PINN / SuperNet approaches are advisable.
 
-\subsection*{Ograniczenia i przyszłe prace}
-Przeprowadzone eksperymenty mają kilka ograniczeń: zakres parametrów i rozmiarów siatki jest umiarkowany (nx do 200), testy wykonywano na CPU, a optymalizacja hiperparametrów sieci (np. architektura, współczynniki regularizacji) została przeprowadzona tylko w ograniczonym zakresie. Przyszłe prace mogą obejmować: skalowanie eksperymentów na GPU, gruntowne badania wpływu seedów i odchyleń losowych, zastosowanie zaawansowanych technik optymalizacyjnych dla PINN (adaptacyjne wagi strat, większe zbiory danych), oraz porównanie z klasycznymi numerycznymi metodami adaptacyjnymi (np. adaptacyjne siatki czasowo-przestrzenne).
+\subsection*{Limitations and Future Work}
+The experiments have several limitations: parameter ranges and grid sizes were moderate (nx up to 200), tests were performed on CPU, and hyperparameter optimization (e.g., architecture, regularization coefficients) was only performed to a limited extent. Future work could include: scaling experiments on GPU, thorough studies of seed and randomness effects, application of advanced optimization techniques for PINNs (adaptive loss weights, larger datasets), and comparison with classical adaptive numerical methods (e.g., adaptive spatio-temporal meshes).
 
 \bibliographystyle{plain}
 \nocite{*}
