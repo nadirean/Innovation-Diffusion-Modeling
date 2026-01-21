@@ -18,10 +18,9 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-This report documents the execution of a project series focusing on modeling and simulation of nonlinear dynamical systems described by partial (PDE) and ordinary (ODE) differential equations. The work covers the full spectrum of modeling: from classical numerical discretization and stability analysis (Task 2), through parameter sensitivity analysis (Task 4) and data assimilation (Task 5), to advanced physics-informed machine learning methods (Task 6) and the SuperNet concept (Task 7). Performance measurements were also carried out (Task 3). Results indicate high effectiveness of PINNs in approximating solutions with a limited number of measurement points and show the benefits of ensemble-style approaches (SuperNet) when modeling systems with uncertain parameters.
+A concise summary of modeling and simulation of a one-dimensional reaction--diffusion system. The study compares classical solvers, sensitivity analysis, data assimilation, PINN and SuperNet methods, and reports key metrics and runtimes. Main findings: PINNs perform well with sparse measurements; SuperNet improves robustness to parameter uncertainty.
 \end{abstract}
 
-\clearpage
 \tableofcontents
 \clearpage
 
@@ -52,23 +51,7 @@ The initial condition $u(x,0)$ was specified in three variants:
 \end{itemize}
 
 \section{Task 2: Classical Numerical Methods}
-\subsection{Spatial Discretization}
-The Method of Lines was applied. The spatial domain was divided into $N_x$ points with step $\Delta x = 1/(N_x-1)$. The Laplace operator was approximated by a second-order finite difference:
-\begin{equation}
-    u_{xx} \approx \frac{u_{i-1} - 2u_i + u_{i+1}}{\Delta x^2}
-\end{equation}
-Neumann boundary conditions were implemented by modifying the operator matrix (reflecting boundary values), which leads to a sparse tridiagonal matrix. The code uses the \texttt{scipy.sparse.csr\_matrix} format for computational efficiency.
-
-\subsection{Time Integration Methods}
-Three schemes with different characteristics were implemented:
-\begin{enumerate}
-    \item \textbf{Explicit (FE)}: Forward Euler scheme. Simple to implement but limited by the Courant–Friedrichs–Lewy (CFL) stability condition: $\Delta t \le \frac{\Delta x^2}{2D}$. For fine grids this requires very small time steps.
-    \item \textbf{Semi-implicit}: Diffusion is treated implicitly (Backward Euler) while reaction is explicit. This avoids the stiff time-step restriction from diffusion. It requires solving a linear system $(I - \Delta t D A)u^{n+1} = u^n + \Delta t R(u^n)$.
-    \item \textbf{Crank–Nicolson (CN)}: Second-order accurate in time. Uses the average of explicit and implicit steps for diffusion. It is unconditionally stable for linear problems.
-\end{enumerate}
-
-\subsection{Results and Performance Analysis}
-Measurements were taken for $n_x \in \{50, 100, 200\}$. Data in Tables \ref{tab:timings-summary} and \ref{tab:timings-nx} show that the explicit method is the fastest provided stability is maintained, while the cost of solving sparse systems in CN is acceptable and grows almost linearly with $n_x$.
+We used the Method of Lines with second-order finite differences and Neumann boundary conditions (implemented with \texttt{scipy.sparse}). Time integration schemes: explicit Forward Euler (CFL-limited), semi-implicit (implicit diffusion, explicit reaction) and Crank--Nicolson. Tests for $n_x=50,100,200$ indicate explicit is fastest when stable (~0.005 s), while semi-implicit and CN cost ~0.03--0.035 s but allow larger time steps and greater stability.
 
 \begin{table}[h]
 \centering
