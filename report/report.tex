@@ -18,14 +18,14 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-A concise summary of modeling and simulation of a one-dimensional reaction--diffusion system. The study compares classical solvers, sensitivity analysis, data assimilation, PINN and SuperNet methods, and reports key metrics and runtimes. Main findings: PINNs perform well with sparse measurements; SuperNet improves robustness to parameter uncertainty.
+Modeling and simulation of a one-dimensional reaction--diffusion system comparing classical solvers, sensitivity analysis, data assimilation, PINN and SuperNet methods, with key metrics and runtimes. Main findings: PINNs perform well with sparse measurements and SuperNet improves robustness to parameter uncertainty.
 \end{abstract}
 
 \tableofcontents
 \clearpage
 
 \section{Introduction and Problem Statement}
-Modeling complex systems in biology or chemistry often leads to reaction-diffusion equations that combine local kinetics (reaction) with spatial mass transport (diffusion).
+Reaction--diffusion equations combine local kinetics with spatial transport and model many biological and chemical systems.
 
 \subsection{Mathematical Model}
 The main object of study in the project is a one-dimensional parabolic equation:
@@ -45,15 +45,15 @@ To ensure uniqueness of the solution and to model an isolated system, homogeneou
 \end{equation}
 The initial condition $u(x,0)$ was specified in three variants:
 \begin{itemize}
-    \item \texttt{gaussian}: a Gaussian profile centered at $0.5$ (modeling a local seed),
-    \item \texttt{localized}: a rectangular pulse in the center of the domain,
-    \item \texttt{small\_random}: small-amplitude random perturbations to test stability of the steady state.
+    \item \texttt{gaussian}: Gaussian centered at $0.5$,
+    \item \texttt{localized}: rectangular pulse in the center,
+    \item \texttt{small\_random}: small random perturbations.
 \end{itemize}
 
 \section{Task 2: Classical Numerical Methods}
-We used the Method of Lines with second-order finite differences and Neumann boundary conditions (implemented with \texttt{scipy.sparse}). Time integration schemes: explicit Forward Euler (CFL-limited), semi-implicit (implicit diffusion, explicit reaction) and Crank--Nicolson. Tests for $n_x=50,100,200$ indicate explicit is fastest when stable (~0.005 s), while semi-implicit and CN cost ~0.03--0.035 s but allow larger time steps and greater stability.
+Method of Lines with second-order finite differences and Neumann BCs (implemented with \texttt{scipy.sparse}); time integrators: explicit Forward Euler, semi-implicit, and Crank--Nicolson. For $n_x=50,100,200$ explicit is fastest when stable (~0.005 s), while semi-implicit and CN cost ~0.03--0.035 s but allow larger time steps.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Summary of timings (s) for each solver}
 \label{tab:timings-summary}
@@ -68,7 +68,7 @@ crank-nicolson & 18 & 0.035034 & 0.036128 & 0.017829--0.059576 \\
 \end{tabular}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Average times (s) as a function of \texttt{nx} for each solver}
 \label{tab:timings-nx}
@@ -94,25 +94,25 @@ Below are example final profiles (for selected parameters) for the three solvers
 \end{figure}
 
 \section{Task 3: Inference and NN Models}
-Comparative tests of prediction time were performed. The ODE model, despite its simplicity, requires numerical integration (e.g., RK45), which adds overhead (\SI{1.29}{ms}). A simple feed-forward neural network predicting the next state in one pass achieves \SI{0.87}{ms}, representing about 30\% savings. This suggests potential of machine learning methods for real-time control systems.
+Prediction-time tests show the ODE (RK45) costs ~1.29 ms, while a simple feed-forward NN predicts in ~0.87 ms (~30\% faster), indicating NNs' potential for real-time use.
 
 \section{Task 4: Sensitivity Analysis (SA)}
-An analysis of the impact of parameters $D, p, q$ on system behavior was conducted.
+An analysis of the impact of parameters $D,p,q$ on system behavior was conducted.
 \begin{itemize}
-    \item \textbf{Morris method}: A fast screening method. It revealed that parameter $q$ (autocatalysis) has the most nonlinear and dominant influence on the final profile $u(x,T)$.
-    \item \textbf{Sobol analysis}: A variance-based decomposition method. It computed first-order indices and confirmed that $D$ is responsible for smoothing the profile, while interactions between $p$ and $q$ determine the system's bifurcation point.
+    \item \textbf{Morris}: fast screening; $q$ (autocatalysis) has the largest nonlinear effect on the final profile.
+    \item \textbf{Sobol}: variance-based analysis confirming $D$ smooths the profile and $p,q$ interactions affect bifurcation.
 \end{itemize}
 
 \section{Task 5: Data Assimilation (DA)}
 This task concerned reconstructing the system state from noisy measurements.
 \begin{itemize}
-    \item \textbf{ABC (Approximate Bayesian Computation)}: A likelihood-free method. It enabled estimation of posterior distributions for $p$ and $q$. The method is stable but computationally expensive (requires thousands of simulations).
-    \item \textbf{3D-Var}: A variational method minimizing a cost functional combining deviation from measurements and from the physical operator. 3D-Var proved much faster than ABC, achieving good field prediction $u(x,t)$ even with high noise (SNR < 10dB).
+    \item \textbf{ABC}: likelihood-free posterior estimation for $p,q$ — stable but computationally expensive.
+    \item \textbf{3D-Var}: variational method; faster than ABC and provides good field reconstruction even at low SNR.
 \end{itemize}
 
 \section{Task 6: PINN -- Physics-Informed Neural Networks}
 \subsection{Architecture and Training Procedure}
-The PINN model was designed as an MLP with 5 layers (64 neurons each) and residual connections (Residual Blocks) every two layers. The \texttt{Tanh} activation was used to ensure continuity of high-order derivatives needed for computing the PDE residual.
+The PINN is an MLP with 5 layers of 64 neurons and residual connections; \texttt{Tanh} activations ensure smooth derivatives for PDE residual evaluation.
 
 \subsection{Loss Function}
 The key component of a PINN is a composite loss function:
@@ -125,12 +125,12 @@ where:
     \item $L_{phy} = \frac{1}{N_c} \sum |u_t - D u_{xx} - R(u)|^2$ computed at collocation points using \texttt{autograd}.
     \item $L_{bc}$ enforces Neumann boundary conditions.
 \end{itemize}
-A \textbf{Dynamic Weight Scheduling} was introduced: $\lambda_{phy}$ increases during training (from $0.1$ to $2.0$), allowing the network to first learn the general data shape and then precisely fit the physics.
+A \textbf{Dynamic Weight Scheduling} increased $\lambda_{phy}$ during training (0.1 → 2.0) so the network first fits data then emphasizes physics.
 
 \subsection{Results and Metrics}
-In the experiment the PINN was trained for 2000 epochs. Training was monitored via the loss history. Training metrics are summarized in Table \ref{tab:pinn-metrics}.
+The PINN was trained for 2000 epochs; training metrics are summarized in Table \ref{tab:pinn-metrics}.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{PINN training metrics (Task 6)}
 \label{tab:pinn-metrics}
@@ -146,7 +146,7 @@ Training time & 76.58 s \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=0.48\textwidth]{../zad6/results/pinn_results_heatmap_improved.png}
 \includegraphics[width=0.48\textwidth]{../zad6/results/pinn_vs_pde_vs_ode_improved.png}
@@ -155,16 +155,16 @@ Training time & 76.58 s \\
 
 \section{Task 7: SuperNet and Ensemble Modeling}
 \subsection{SuperModel Concept}
-In Task 7 we considered a system where physical parameters are known with some error or come from different sources. The SuperModel ODE consists of an ensemble of models coupled by a coupling term:
+Task 7 considers parameter uncertainty: the SuperModel ODE is an ensemble coupled by
 \begin{equation}
     \dot{u}_i = f(u_i; \theta_i) + C(\bar{u} - u_i)
 \end{equation}
-where $\bar{u}$ is the ensemble mean. Such synchronization allows more stable prediction than any model alone.
+with ensemble mean $\bar{u}$, yielding more stable predictions than single models.
 
 \subsection{SuperNet PINN}
 A \textbf{SuperNet PINN} was implemented to learn to represent the entire family of solutions. The network shows strong robustness to input parameter perturbations due to its ability to capture the general structure of the differential operator.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Metric comparison: SuperModel vs SuperNet (Task 7)}
 \label{tab:supernet-metrics}
@@ -181,7 +181,7 @@ Single Perturbed ODE & 0.054936 & 0.111640 \\
 \par Training time (SuperNet): 186.24 s
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=0.49\textwidth]{../zad7/results/supermodel_vs_supernet_improved.png}
 \includegraphics[width=0.49\textwidth]{../zad7/results/supernet_loss_history_improved.png}
@@ -189,9 +189,9 @@ Single Perturbed ODE & 0.054936 & 0.111640 \\
 \end{figure}
 
 \section{Detailed Summary of Results}
-Below is a consolidated summary of selected metrics and timing measurements to facilitate quick comparison of results obtained across tasks.
+Consolidated summary of selected metrics and timings for quick comparison across tasks.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Summary of key project results}
 \begin{tabular}{lrrl}
@@ -212,17 +212,16 @@ Task 7: SuperNet (MAE / RMSE) & 0.017152 & 0.017845 & training time 186.24 s \\
 \section{Discussion}
 Key observations:
 \begin{itemize}
-\item Explicit methods are very fast for small grid sizes, but in practice their stability constrains the time step (CFL) — in experiments the explicit method yielded the shortest average time.
-\item Implicit schemes (CN and semi-implicit) are slower but more stable and allow larger time steps without loss of stability.
-\item PINNs achieved reasonable accuracy (MAE~0.03), which is competitive with classical solvers for certain tasks; however, their training cost is higher than simple PDE solvers.
-\item SuperNet PINN reduces average prediction error compared to a single perturbed ODE model, showing that parametric learning can increase robustness and accuracy.
+\item Explicit methods are fast but CFL-limited; implicit schemes allow larger time steps at modest extra cost.
+\item PINNs are competitive (MAE~0.03) but incur higher training cost; SuperNet reduces error and increases robustness.
+\item Method choice depends on the use case: lightweight NNs for fast inference, PINN/SuperNet for parameter-flexible accuracy.
 \end{itemize}
 
 \section{Conclusions}
-The project demonstrated practical differences between numerical approaches and machine learning methods in the context of differential equations. For tasks requiring fast inference it is worth considering lightweight NN models, while for high accuracy and flexible parameter modeling, PINN / SuperNet approaches are advisable.
+The project highlights trade-offs: lightweight NNs suit fast inference, while PINN/SuperNet offer higher accuracy and parameter flexibility.
 
 \subsection*{Limitations and Future Work}
-The experiments have several limitations: parameter ranges and grid sizes were moderate (nx up to 200), tests were performed on CPU, and hyperparameter optimization (e.g., architecture, regularization coefficients) was only performed to a limited extent. Future work could include: scaling experiments on GPU, thorough studies of seed and randomness effects, application of advanced optimization techniques for PINNs (adaptive loss weights, larger datasets), and comparison with classical adaptive numerical methods (e.g., adaptive spatio-temporal meshes).
+Limitations include moderate parameter/grid ranges ($n_x \le 200$), CPU-only tests, and limited hyperparameter tuning. Future work: scale to GPU, study randomness effects, explore adaptive loss/optimization for PINNs and compare with adaptive numerical methods.
 
 \bibliographystyle{plain}
 \nocite{*}
