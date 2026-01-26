@@ -150,6 +150,10 @@ Training time & 76.58 s \\
 \caption{PINN experiment results: left heatmap of errors, right comparison of solutions.}
 \end{figure}
 
+\paragraph{Note on boundary-condition experiment.}
+As an additional experiment, we tried to enforce the Neumann (no-flux) boundary conditions more aggressively by explicitly sampling boundary points ($x=0$ and $x=1$ for random $t$) and adding a dedicated boundary penalty based on $u_x(0,t)$ and $u_x(1,t)$ computed via \texttt{autograd}. In practice this resulted in a total failure of training: boundary derivatives at the exact domain edges were extremely noisy/ill-conditioned early on, so when the boundary term was weighted strongly the optimization became unstable (occasionally producing exploding gradients / NaNs), and when weighted moderately it pushed the network towards a trivial overly-smooth (almost constant) solution that satisfied $u_x\approx 0$ everywhere but did not match the reaction dynamics.
+For the final reported run we therefore kept the boundary enforcement weak and relied primarily on the physics residual loss and the fact that the reference PDE data are generated with a Neumann Laplacian.
+
 \section{Task 7: SuperNet and Ensemble Modeling}
 \subsection{SuperModel Concept}
 Task 7 considers parameter uncertainty: the SuperModel ODE is an ensemble coupled by
