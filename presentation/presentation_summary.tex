@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usetheme{metropolis}
 
-\title{A11 — Dyfuzja innowacji i popytu na rynku}
+\title{A11 - Dyfuzja innowacji i popytu na rynku}
 \author{Wojciech Bartoszek \ Łukasz Checiak}
 \date{}
 
@@ -18,17 +18,17 @@
 \end{frame}
 
 % --- Zadanie 1 ---
-\begin{frame}{Zadanie 1 — Model i kontekst}
+\begin{frame}{Zadanie 1 - Model i kontekst}
 \vspace{-0.5em}
 \begin{itemize}
-  \item Model: $u_t = D\Delta u + (p+q u)(1-u)$ — łączenie Bassa i F-KPP.
+  \item Model: $u_t = D\Delta u + (p+q u)(1-u)$ - łączenie Bassa i F-KPP.
   \item Interpretacja: $p$ = innowacja (zew.), $q$ = imitacja (wewn.), $D$ = dyfuzja (przestrz.).
   \item Kluczowy insight: krzywa adopcji typu S; przestrzenne modele dają propagujące się fale.
 \end{itemize}
 \end{frame}
 
 % --- Zadanie 2 ---
-\begin{frame}{Zadanie 2 — Porównanie solverów}
+\begin{frame}{Zadanie 2 - Porównanie solverów}
 \begin{columns}
 \begin{column}{0.55\textwidth}
 \vspace{-0.5em}
@@ -47,10 +47,10 @@
 \end{frame}
 
 % --- Zadanie 3 ---
-\begin{frame}{Zadanie 3 — Surogat ODE i NN}
+\begin{frame}{Zadanie 3 - Surogat ODE i NN}
 \begin{itemize}
-  \item Uśrednienie PDE dało ODE: $\dot U=(p+qU)(1-U)$ — szybkie przybliżenie średniej.
-  \item NN (MLP) jako surogat: wejście $(t,D,p,q) \mapsto U(t)$ — natychmiastowa predykcja.
+  \item Uśrednienie PDE dało ODE: $\dot U=(p+qU)(1-U)$ - szybkie przybliżenie średniej.
+  \item NN (MLP) jako surogat: wejście $(t,D,p,q) \mapsto U(t)$ - natychmiastowa predykcja.
   \item Czas inferencji: ODE ~1.29 ms, NN ~0.87 ms; dobry kompromis dokładność/prędkość.
 \end{itemize}
 \vspace{0.6em}
@@ -59,7 +59,7 @@
 \end{frame}
 
 % --- Zadanie 4 ---
-\begin{frame}{Zadanie 4 — Analiza wrażliwości}
+\begin{frame}{Zadanie 4 - Analiza wrażliwości}
 \begin{itemize}
   \item Metody: Morris (screening) i Sobol (wariancja globalna).
   \item Wynik: parametr \textbf{q} (imitacja) ma dominujący wpływ (wysokie $\mu^*$ i $S_T$); $p$ umiarkowane, $D$ mały wpływ na średnią.
@@ -70,7 +70,7 @@
 \end{frame}
 
 % --- Zadanie 5 ---
-\begin{frame}{Zadanie 5 — Asymilacja danych}
+\begin{frame}{Zadanie 5 - Asymilacja danych}
 \begin{itemize}
   \item Cel: Estymacja parametrów + stanu na podstawie zaszumionych obserwacji.
   \item ODE: 3D-Var szybki i najlepszy (RMSE ~0.0061). ABC wolniejszy, RMSE ~0.0117.
@@ -82,10 +82,10 @@
 \end{frame}
 
 % --- Zadanie 6 ---
-\begin{frame}{Zadanie 6 — PINN}
+\begin{frame}{Zadanie 6 - PINN}
 \begin{itemize}
   \item PINN: trenowana z loss = data + physics; techniki: residualy, warm-up \(\lambda_{phy}\), schedulery.
-  \item Wynik (ulepszone): MAE 0.0312, RMSE 0.0583 — znacząca redukcja błędu względem baseline.
+  \item Wynik (ulepszone): MAE 0.0312, RMSE 0.0583 - znacząca redukcja błędu względem baseline.
 \end{itemize}
 \vspace{0.6em}
 \centering
@@ -93,7 +93,7 @@
 \end{frame}
 
 % --- Zadanie 7 ---
-\begin{frame}{Zadanie 7 — Supermodel i SuperNet}
+\begin{frame}{Zadanie 7 - Supermodel i SuperNet}
 \begin{itemize}
   \item Supermodel ODE (ensemble + nudging) redukuje błąd (RMSE: 0.0451 vs single 0.1116).
   \item SuperNet PINN (ensemble PINN + coupling) osiąga najlepsze wyniki: MAE 0.0172, RMSE 0.0178.
