@@ -35,6 +35,15 @@ where $u(x,t)\in[0,1]$ is the cumulative market share of an innovation, $D$ is s
 
 Main findings: PINNs perform well with sparse noisy measurements, and the SuperNet ensemble improves robustness to parameter uncertainty beyond both a single PINN and the ODE SuperModel.
 
+## Selected figures
+
+| | |
+|---|---|
+| ![](zad2/results/timings.png) | ![](zad6/results/pinn_results_heatmap_improved.png) |
+| Solver timing vs grid resolution (both dt values) | PINN prediction vs ground truth and absolute error |
+| ![](zad5/results/pde_assimilation_results_center_budget_high.png) | ![](zad7/results/supermodel_vs_supernet_improved.png) |
+| PDE data assimilation, High budget (3D-Var in red) | SuperModel ODE vs SuperNet PINN vs ground truth |
+
 ## Repository layout
 
 - `common/` - shared package: model, solvers, surrogates, PINN, SuperModel/SuperNet, assimilation, sensitivity, plotting
