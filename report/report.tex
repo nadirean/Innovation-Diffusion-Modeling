@@ -11,9 +11,9 @@
 \usepackage{float}
 \geometry{margin=3cm}
 
-\title{A11 — Diffusion of Innovation and Market Demand}
+\title{A11 - Diffusion of Innovation and Market Demand}
 \author{Wojciech Bartoszek \\ \L{}ukasz Checiak}
-\date{}
+\date{2025}
 
 \begin{document}
 \maketitle
@@ -48,7 +48,7 @@ The initial condition $u(x,0)$ was specified in three variants:
 \end{itemize}
 
 \section{Task 2: Classical Numerical Methods}
-Method of Lines with second-order finite differences and Neumann BCs (implemented with \texttt{scipy.sparse}); time integrators: explicit Forward Euler, semi-implicit, and Crank--Nicolson. For $n_x=50,100,200$ explicit is fastest when stable (~0.005 s), while semi-implicit and CN cost ~0.03--0.035 s but allow larger time steps.
+Method of Lines with second-order finite differences and Neumann BCs (implemented with \texttt{scipy.sparse}); time integrators: explicit Forward Euler, semi-implicit, and Crank--Nicolson. Each configuration was repeated 3 times (median timing reported), and the sparse system matrices are factorized once (\texttt{splu}) and reused across time steps. For $n_x=50,100,200$ explicit is fastest when stable (~0.0046 s), while semi-implicit and CN cost ~0.0055 s and ~0.0076 s respectively but allow larger time steps. Three explicit configurations violating the CFL condition ($D\,dt/dx^2 > 0.5$) were skipped and are flagged in the timing table.
 
 \begin{table}[ht]
 \centering
@@ -58,9 +58,9 @@ Method of Lines with second-order finite differences and Neumann BCs (implemente
 \toprule
 Solver & n & mean (s) & median (s) & min--max (s) \\
 \midrule
-explicit        & 18 & 0.004796 & 0.005757 & 0.002908--0.006753 \\
-semi-implicit  & 18 & 0.032856 & 0.033343 & 0.016413--0.056765 \\
-crank-nicolson & 18 & 0.035034 & 0.036128 & 0.017829--0.059576 \\
+explicit        & 15 & 0.004606 & 0.005240 & 0.002604--0.006563 \\
+semi-implicit  & 18 & 0.005480 & 0.005236 & 0.003174--0.008479 \\
+crank-nicolson & 18 & 0.007621 & 0.008540 & 0.004315--0.011204 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -73,9 +73,9 @@ crank-nicolson & 18 & 0.035034 & 0.036128 & 0.017829--0.059576 \\
 \toprule
 Solver & \texttt{nx}=50 & \texttt{nx}=100 & \texttt{nx}=200 \\
 \midrule
-explicit & 0.004897 & 0.004507 & 0.004984 \\
-semi-implicit & 0.025079 & 0.031093 & 0.042396 \\
-crank-nicolson & 0.027105 & 0.033283 & 0.044714 \\
+explicit & 0.004589 & 0.004596 & 0.004645 \\
+semi-implicit & 0.004837 & 0.005276 & 0.006325 \\
+crank-nicolson & 0.006477 & 0.007332 & 0.009054 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -84,14 +84,14 @@ crank-nicolson & 0.027105 & 0.033283 & 0.044714 \\
 Below are example final profiles (for selected parameters) for the three solvers.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.32\textwidth]{../zad2/results/explicit_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
-\includegraphics[width=0.32\textwidth]{../zad2/results/semi-implicit_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
-\includegraphics[width=0.32\textwidth]{../zad2/results/crank-nicolson_nx100_dt0.0001_D1.0_p0.1_q10.0.png}
+\includegraphics[width=0.32\textwidth]{../zad2/results/explicit_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
+\includegraphics[width=0.32\textwidth]{../zad2/results/semi-implicit_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
+\includegraphics[width=0.32\textwidth]{../zad2/results/crank-nicolson_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
 \caption{Comparison of final profiles for the \texttt{explicit}, \texttt{semi-implicit} and \texttt{crank-nicolson} solvers.}
 \end{figure}
 
 \section{Task 3: Inference and NN Models}
-Prediction-time tests show the ODE (RK45) costs ~1.29 ms, while a simple feed-forward NN predicts in ~0.87 ms (~30\% faster), indicating NNs' potential for real-time use.
+Prediction-time tests show the ODE (RK45) costs ~0.60 ms, while a simple feed-forward NN predicts in ~0.16 ms (~73\% faster), indicating NNs' potential for real-time use.
 
 \section{Task 4: Sensitivity Analysis (SA)}
 An analysis of the impact of parameters $D,p,q$ on system behavior was conducted.
@@ -103,8 +103,8 @@ An analysis of the impact of parameters $D,p,q$ on system behavior was conducted
 \section{Task 5: Data Assimilation (DA)}
 This task concerned reconstructing the system state from noisy measurements.
 \begin{itemize}
-    \item \textbf{ABC}: likelihood-free posterior estimation for $p,q$ — stable but computationally expensive.
-    \item \textbf{3D-Var}: variational method; faster than ABC and provides good field reconstruction even at low SNR.
+    \item \textbf{ABC}: likelihood-free posterior estimation for $p,q$; stable but computationally expensive (PDE RMSE 0.027--0.029 across budgets).
+    \item \textbf{3D-Var}: variational method; converges to RMSE 0.0061 on the ODE surrogate and, once the PDE solve was sped up by reusing the sparse factorization, to RMSE 0.0017--0.0024 on the full PDE - clearly better than ABC under the same budgets.
 \end{itemize}
 
 \section{Task 6: PINN -- Physics-Informed Neural Networks}
@@ -135,10 +135,10 @@ The PINN was trained for 2000 epochs; training metrics are summarized in Table \
 \toprule
 Metric & Value \\
 \midrule
-MAE & 0.031193 \\
-RMSE & 0.058344 \\
-relL2 & 0.065468 \\
-Training time & 76.58 s \\
+MAE & 0.031354 \\
+RMSE & 0.061202 \\
+relL2 & 0.068676 \\
+Training time & 75.75 s \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -173,13 +173,13 @@ A \textbf{SuperNet PINN} was implemented to learn to represent the entire family
 \toprule
 Model & MAE & RMSE \\
 \midrule
-SuperModel ODE & 0.022182 & 0.045112 \\
-SuperNet PINN & 0.017152 & 0.017845 \\
+SuperModel ODE & 0.022180 & 0.045112 \\
+SuperNet PINN & 0.010666 & 0.012541 \\
 Single Perturbed ODE & 0.054936 & 0.111640 \\
 \bottomrule
 \end{tabular}
 \vspace{4pt}
-\par Training time (SuperNet): 186.24 s
+\par Training time (SuperNet): 156.08 s
 \end{table}
 
 \begin{figure}[ht]
@@ -199,13 +199,13 @@ Consolidated summary of selected metrics and timings for quick comparison across
 \toprule
 Description & Value 1 & Value 2 & Notes \\
 \midrule
-Task 2: explicit (average time) & 0.004796 s &  & average over 18 runs \\
-Task 2: semi-implicit (average time) & 0.032856 s &  &  \\
-Task 2: crank-nicolson (average time) & 0.035034 s &  &  \\
-Task 3: ODE (inference time) & 1.2921 ms &  & per-sample time \\
-Task 3: simple NN (inference time) & 0.8670 ms &  & per-sample time \\
-Task 6: PINN (MAE / RMSE) & 0.031193 & 0.058344 & training time 76.58 s \\
-Task 7: SuperNet (MAE / RMSE) & 0.017152 & 0.017845 & training time 186.24 s \\
+Task 2: explicit (average time) & 0.004606 s &  & median of 3 repeats per config \\
+Task 2: semi-implicit (average time) & 0.005480 s &  &  \\
+Task 2: crank-nicolson (average time) & 0.007621 s &  &  \\
+Task 3: ODE (inference time) & 0.5996 ms &  & per-sample time \\
+Task 3: simple NN (inference time) & 0.1639 ms &  & per-sample time \\
+Task 6: PINN (MAE / RMSE) & 0.031354 & 0.061202 & training time 75.75 s \\
+Task 7: SuperNet (MAE / RMSE) & 0.010666 & 0.012541 & training time 156.08 s \\
 \bottomrule
 \end{tabular}
 \end{table}

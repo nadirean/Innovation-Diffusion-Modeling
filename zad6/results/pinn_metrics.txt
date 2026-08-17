@@ -1,6 +1,6 @@
-MAE  = 0.031193
-RMSE = 0.058344
-relL2 = 0.065468
-Training time: 76.58s
+MAE  = 0.031354
+RMSE = 0.061202
+relL2 = 0.068676
+Training time: 75.75s
 Network: 64 hidden units, 5 layers with residual connections
 Epochs: 2000

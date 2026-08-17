@@ -1,6 +1,6 @@
-SuperModel ODE - MAE: 0.022182, RMSE: 0.045112
-SuperNet PINN - MAE: 0.017152, RMSE: 0.017845
+SuperModel ODE - MAE: 0.022180, RMSE: 0.045112
+SuperNet PINN - MAE: 0.010666, RMSE: 0.012541
 Single Perturbed ODE - MAE: 0.054936, RMSE: 0.111640
-Training time: 186.24s
+Training time: 156.08s
 Network: 64 hidden units, 5 layers with residual connections
 Epochs: 2000

@@ -3,7 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{textcomp}
-\usepackage[polish]{babel}
+\usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{grffile}
@@ -11,9 +11,9 @@
 \usepackage{subcaption}
 \usetheme{metropolis}
 
-\title{A11 - Dyfuzja innowacji i popytu na rynku}
+\title{A11 - Diffusion of Innovation and Market Demand}
 \author{Wojciech Bartoszek \\ Łukasz Checiak}
-\date{} 
+\date{2025}
 
 \begin{document}
 
@@ -21,96 +21,96 @@
   \titlepage
 \end{frame}
 
-% --- Zadanie 1: original presentation/presentation.tex content ---
-\section*{Zadanie 1 - Wprowadzenie, SOTA i sformułowanie modelu}
+% --- Task 1: introduction, SOTA and model formulation ---
+\section*{Task 1 - Introduction, SOTA and Model Formulation}
 
-\begin{frame}{Wprowadzenie}
+\begin{frame}{Introduction}
 \begin{itemize}
-  \item \textbf{Dyfuzja innowacji} – proces upowszechniania się nowych produktów lub technologii w społeczeństwie, przechodzący kolejne fazy adopcji kolejnych grup odbiorców \cite{wiki:dyfuzja}.
-  \item Proces adopcji przebiega początkowo wolno, następnie nabiera tempa, często zgodnie z charakterystyczną krzywą S (funkcja logistyczna) \cite{bass:1969}.
-  \item Wzrost popytu na innowację wspierają zarówno innowatorzy (early adopters), jak i mechanizm naśladownictwa („word-of-mouth”).
-  \item Modele matematyczne umożliwiają kwantyfikację dynamiki popytu i adopcji (prognozowanie rozmiaru rynku) \cite{hashemi2011}.
+  \item \textbf{Diffusion of innovations} - the process by which new products or technologies spread through society, passing through successive adoption phases of different audience groups.
+  \item Adoption starts slowly, then accelerates, often following the characteristic S-curve (logistic function) \cite{bass:1969}.
+  \item Demand for an innovation is driven both by innovators (early adopters) and the imitation mechanism ("word-of-mouth").
+  \item Mathematical models allow quantifying the dynamics of demand and adoption (market-size forecasting).
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Klasyczne modele matematyczne dyfuzji}
+\begin{frame}{Classical Mathematical Models of Diffusion}
 \begin{itemize}
-  \item \textbf{Model Bassa} (1969) – równanie różniczkowe opisujące tempo adopcji nowego produktu. Zakłada dwie kategorie nabywców: \emph{innowatorów} (efekt zewnętrzny) i \emph{naśladowców} (efekt imitacji). Równanie: $\frac{dF}{dt}=p(1-F)+qF(1-F)$, gdzie $F(t)$ to skumulowany udział adopcji, $p$ – współczynnik innowacji, $q$ – współczynnik imitacji \cite{bass:1969}. Rozwiązanie daje S-kształtną krzywą adopcji: początkowo szybki wzrost, potem nasycenie.
-  \item \textbf{Równanie Fishera–Kolmogorowa–Petrowskiego–Piskunowa (F-KPP)} – reakcyjno-dyfuzyjne równanie PDE: $u_t = D \Delta u + r\,u(1-u)$ \cite{fisher1937}. Proponowane w genetyce populacji (Fisher 1937) do opisania fali rozprzestrzeniania korzystnego genu. W ekonomii modeluje propagację innowacji jako falę nasycenia (przejście od stanu bez adopcji do pełnej adopcji).
-  \item \textbf{Przebieg krzywej adopcji} – obydwa powyższe modele generują krzywę typu logistycznego (S-kształtną): szybka faza początkowa (wzrost adopcji) i faza wygaszania przy nasyceniu rynku \cite{bass:1969,fisher1937}.
+  \item \textbf{Bass model} (1969) - an ODE describing the adoption rate of a new product. It assumes two buyer categories: \emph{innovators} (external effect) and \emph{imitators} (imitation effect). Equation: $\frac{dF}{dt}=p(1-F)+qF(1-F)$, where $F(t)$ is the cumulative adoption share, $p$ the innovation coefficient, $q$ the imitation coefficient \cite{bass:1969}. The solution gives an S-shaped adoption curve: initial fast growth, then saturation.
+  \item \textbf{Fisher-Kolmogorov-Petrovsky-Piskunov (F-KPP) equation} - a reaction-diffusion PDE: $u_t = D \Delta u + r\,u(1-u)$ \cite{fisher1937}. Proposed in population genetics (Fisher 1937) to describe the wave of an advantageous gene spreading. In economics it models the propagation of innovation as a saturation wave (transition from no adoption to full adoption).
+  \item \textbf{Adoption curve shape} - both models produce a logistic (S-shaped) curve: a fast initial phase (adoption growth) and a decaying phase at market saturation \cite{bass:1969,fisher1937}.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Uogólnienie do modeli przestrzenno-czasowych (PDE)}
+\begin{frame}{Generalization to Spatio-Temporal (PDE) Models}
 \begin{itemize}
-  \item Dodanie wymiaru przestrzennego do modelu Bassa prowadzi do \emph{równania cząstkowego różniczkowego}: 
+  \item Adding a spatial dimension to the Bass model leads to a \emph{partial differential equation}:
   $$\frac{\partial F(x,t)}{\partial t} = D \Delta F + p\,(1-F) + q\,F(1-F)\,,
   $$
-  gdzie $D$ to współczynnik dyfuzji (intensywność rozprzestrzeniania informacji w przestrzeni) \cite{dubinina2023}.
-  \item Takie modele reakcji–dyfuzji uwzględniają mechanizmy lokalnej interakcji (zależność od odległości przestrzennej) oraz pierwiastek losowy/adopcyjny w zachowaniach konsumentów.
-  \item Rozwiązania przyjmują formę propagujących się fal innowacji (autowal). Ich prędkość opisuje tempo rozwoju popytu w przestrzeni – np. Dubinina (2023) analitycznie wyprowadza falę podróżującą, określając czas osiągnięcia danego poziomu technologii \cite{dubinina2023}.
-  \item W praktyce modele PDE pozwalają analizować klastrowe rozprzestrzenianie się innowacji (np. koncentrujące się „fale adopcji” wokół centrów innowacyjności) oraz prognozować przestrzenne rozkłady popytu.
+  where $D$ is the diffusion coefficient (intensity of information spreading in space) (Dubinina, 2023).
+  \item Such reaction-diffusion models capture local interaction mechanisms (dependence on spatial distance) as well as the random/adoption component in consumer behavior.
+  \item Solutions take the form of propagating innovation waves (autowaves). Their speed describes the rate of demand growth in space - e.g. Dubinina (2023) analytically derives a traveling wave and determines the time to reach a given technology level.
+  \item In practice, PDE models allow analyzing clustered innovation spread (e.g. "adoption waves" concentrating around innovation centers) and forecasting spatial demand distributions.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Sformułowanie konkretnego modelu}
+\begin{frame}{Formulation of the Specific Model}
 \begin{itemize}
-  \item Rozważmy zmienną $u(x,t)\in[0,1]$ – skumulowany udział rynku opanowany przez innowację w punkcie $x$ i czasie $t$. Proponowany model:
+  \item Consider the variable $u(x,t)\in[0,1]$ - the cumulative market share captured by the innovation at point $x$ and time $t$. The proposed model:
   $$\frac{\partial u}{\partial t} = D\,\Delta u + (p + q\,u)\,(1-u)\,. $$
-  \item Interpretacja parametrów: $p$ – stopa innowacji (zewnętrzna, np. reklama), $q$ – współczynnik imitacji (wewnętrzny, efekt „liczenia się z innymi”), $D$ – współczynnik dyfuzji (szybkość propagacji informacji w przestrzeni).
-  \item Warunki początkowe i brzegowe: np. $u(x,0)=u_0(x)$ z niewielką liczbą pionierów w centrum, \; warunki Neumanna ($\nabla u\cdot n=0$) na granicach.
-  \item Model przewiduje przyspieszony wzrost adopcji w początkowej fazie i asymptotyczne nasycenie rynku ($u\to1$). Rozwiązania (np. numeryczne lub w przybliżeniu falowe) pozwalają wyznaczyć czas rozprzestrzeniania innowacji i tempo wzrostu popytu \cite{hashemi2011}.
+  \item Parameter interpretation: $p$ - innovation rate (external, e.g. advertising), $q$ - imitation coefficient (internal, "peer influence" effect), $D$ - diffusion coefficient (speed of information propagation in space).
+  \item Initial and boundary conditions: e.g. $u(x,0)=u_0(x)$ with a small number of pioneers in the center, \; Neumann conditions ($\nabla u\cdot n=0$) at the boundaries.
+  \item The model predicts accelerated adoption growth in the initial phase and asymptotic market saturation ($u\to1$). Solutions (numerical or wave approximations) allow determining the innovation spread time and demand growth rate.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Podsumowanie i zastosowania}
+\begin{frame}{Summary and Applications}
 \begin{itemize}
-    \item Modele przestrzenno-czasowe umożliwiają uwzględnienie efektów geograficznych: jak bliskość i sieci społeczne przyspieszają dyfuzję innowacji \cite{hashemi2011}.
-  \item Zastosowania: prognozowanie rozkładu adopcji w regionach, identyfikacja klastrów innowacji, planowanie strategii marketingowych z uwzględnieniem lokalizacji (marketing geograficzny).
-    \item Kalibracja na danych empirycznych (np. historia adopcji technologii mobilnej) umożliwia przewidywanie tempa wzrostu popytu i oceny opóźnień geograficznych (patrz Dubinina 2023) \cite{dubinina2023}.
-    \item Dalszy rozwój modeli może uwzględniać heterogeniczność populacji, zależność od cen czy czynniki sieciowe, co można wprowadzić jako dodatkowe składniki PDE (np. sprzężenia zwrotne, nieliniowe czynniki) \cite{hashemi2011}.
+    \item Spatio-temporal models capture geographic effects: how proximity and social networks accelerate innovation diffusion.
+  \item Applications: forecasting adoption distribution across regions, identifying innovation clusters, planning marketing strategies with location in mind (geographic marketing).
+    \item Calibration on empirical data (e.g. mobile-technology adoption history) enables predicting demand growth rates and estimating geographic delays (Dubinina, 2023).
+    \item Further development may account for population heterogeneity, price dependence or network factors, introduced as additional PDE components (e.g. feedback loops, nonlinear terms).
 \end{itemize}
 \end{frame}
 
-% --- Zadanie 2: content from zad2/presentation/zad2.tex ---
-\section*{Zadanie 2 - Porównanie solverów dla modelu przestrzenno-czasowego}
+% --- Task 2: content ---
+\section*{Task 2 - Solver Comparison for the Spatio-Temporal Model}
 
-\begin{frame}{Wprowadzenie}
+\begin{frame}{Introduction}
 \begin{itemize}
-  \item Rozważamy model reakcyjno-dyfuzyjny dla udziału adopcji $u(x,t)\in[0,1]$:
-  $$\frac{\partial u}{\partial t} = D\,\frac{\partial^2 u}{\partial x^2} + (p + q\,u)\,(1-u)\,. $$ 
-  \item Parametry: $D$ (dyfuzja), $p$ (innowacja), $q$ (imitacja). Warunki Neumanna na brzegach oraz lokalne warunki początkowe (pionierzy w centrum).
-  \item Celem: porównać wydajność i stabilność rozwiązania dla różnych solverów oraz zidentyfikować bezpieczne przedziały parametrów.
+  \item We consider the reaction-diffusion model for the adoption share $u(x,t)\in[0,1]$:
+  $$\frac{\partial u}{\partial t} = D\,\frac{\partial^2 u}{\partial x^2} + (p + q\,u)\,(1-u)\,. $$
+  \item Parameters: $D$ (diffusion), $p$ (innovation), $q$ (imitation). Neumann conditions at the boundaries and local initial conditions (pioneers in the center).
+  \item Goal: compare the performance and stability of different solvers and identify safe parameter ranges.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Metoda numeryczna — solvery testowane}
+\begin{frame}{Numerical Method - Tested Solvers}
 \begin{itemize}
-  \item explicit: jawny Euler w czasie + centralna druga różnica w przestrzeni (najtańszy krok, ograniczony warunkiem CFL).
-  \item semi-implicit: dyfuzja implicit (rozwiązanie układu liniowego), reakcja jawnie.
-  \item crank-nicolson (CN): CN dla dyfuzji (2. rząd dokładności), reakcja jawnie; większy koszt na krok.
+  \item explicit: forward Euler in time + central second difference in space (cheapest step, limited by the CFL condition).
+  \item semi-implicit: implicit diffusion (solving a linear system), explicit reaction.
+  \item crank-nicolson (CN): CN for diffusion (2nd order accuracy), explicit reaction; higher cost per step.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Plan eksperymentu}
+\begin{frame}{Experiment Plan}
 \begin{itemize}
-  \item Siatki w przestrzeni: $nx\in\{50,100,200\}$.
-  \item Kroki czasowe testowane: $\Delta t\in\{5\cdot10^{-5},\,10^{-4}\}$, całkowity czas symulacji: $T=0.05$ (szybkie testy). 
-  \item Zestaw parametrów (D,p,q): (0.01,0.01,1.0), (0.1,0.001,5.0), (1.0,0.1,10.0).
-  \item Mierzone metryki: czas wykonania (s), wykresy profilu $u(x)$, kontrola czy $u\in[0,1]$ i czy występują NaN/Inf.
+  \item Spatial grids: $nx\in\{50,100,200\}$.
+  \item Tested time steps: $\Delta t\in\{5\cdot10^{-5},\,10^{-4}\}$, total simulation time: $T=0.05$ (fast tests).
+  \item Parameter sets (D,p,q): (0.01,0.01,1.0), (0.1,0.001,5.0), (1.0,0.1,10.0).
+  \item Measured metrics: execution time (s), $u(x)$ profile plots, checks whether $u\in[0,1]$ and whether NaN/Inf appear.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Zestaw wyników (czasy)}
-Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich kombinacji testowych):
+\begin{frame}{Results (Timings)}
+Results from the experiment run (header: mean execution time across all test combinations):
 \begin{itemize}
-  \item explicit — średni czas: $\approx 0.0048\,$s (min $\approx0.0029\,$s, max $\approx0.0068\,$s)
-  \item semi-implicit — średni czas: $\approx 0.0329\,$s (min $\approx0.0164\,$s, max $\approx0.0568\,$s)
-  \item crank-nicolson — średni czas: $\approx 0.0350\,$s (min $\approx0.0178\,$s, max $\approx0.0596\,$s)
+  \item explicit - mean time: $\approx 0.0046\,$s (min $\approx0.0026\,$s, max $\approx0.0066\,$s)
+  \item semi-implicit - mean time: $\approx 0.0055\,$s (min $\approx0.0032\,$s, max $\approx0.0085\,$s)
+  \item crank-nicolson - mean time: $\approx 0.0076\,$s (min $\approx0.0043\,$s, max $\approx0.0112\,$s)
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Przykładowe profile rozwiązania}
+\begin{frame}{Example Solution Profiles}
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.4\textwidth}
@@ -124,337 +124,339 @@ Wyniki z przebiegu eksperymentu (nagłówek: średni czas wyk. dla wszystkich ko
   \vspace{0.5em}
   \begin{subfigure}[b]{0.4\textwidth}
   \includegraphics[width=\textwidth]{../zad2/results/crank-nicolson_nx100_dt0.0001_D0.01_p0.01_q1.0.png}
-    \caption{Crank–Nicolson, nx=100}
+    \caption{Crank--Nicolson, nx=100}
   \end{subfigure}
-  \caption{Przykładowe profile $u(x)$ po czasie $T=0.05$ dla jednej kombinacji parametrów (D=0.01,p=0.01,q=1.0).}
+  \caption{Example profiles $u(x)$ after time $T=0.05$ for one parameter combination (D=0.01,p=0.01,q=1.0).}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Wnioski}
+\begin{frame}{Conclusions}
 \begin{itemize}
-  \item (1) Czas obliczeń: dla krótkich testów jawny solver był najszybszy ze względu na niski koszt pojedynczego kroku; schematy rozwiązujące układy liniowe były wolniejsze.
-  \item (2) Stabilność: jawny (explicit) solver wymaga mniejszego kroku czasowego $\Delta t$ przy wzroście $D$ (CFL \(\sim\) $\mathrm{dx}^2/D$); schematy semi-implicit i CN są bardziej odporne, ale droższe.
-  \item (3) Parametry $p,q$: większe $q$ przyspieszają nasycenie i mogą prowadzić do szybkich wzrostów lokalnych; zalecamy testy kalibracyjne na danych empirycznych.
-  \item (4) Zakresy parametryczne (przykładowo): dla stabilnych symulacji przy $nx=100$ i $dt=10^{-4}$ przykładowe granice to: $D\lesssim0.1$ (dla explicit), $p\in[10^{-4},0.1]$, $q\in[0.1,10]$ — jednak ostateczne granice wymagają szczegółowego testu stabilności i dokładności.
+  \item (1) Computation time: for short tests the explicit solver was fastest due to the low cost of a single step; schemes solving linear systems were slower.
+  \item (2) Stability: the explicit solver requires a smaller time step $\Delta t$ as $D$ increases (CFL \(\sim\) $\mathrm{dx}^2/D$); semi-implicit and CN schemes are more robust but more expensive.
+  \item (3) Parameters $p,q$: larger $q$ accelerates saturation and may lead to fast local growth; we recommend calibration tests on empirical data.
+  \item (4) Parameter ranges (exemplary): for stable simulations at $nx=100$ and $dt=10^{-4}$ sample limits are: $D\lesssim0.1$ (for explicit), $p\in[10^{-4},0.1]$, $q\in[0.1,10]$ - however final limits require a detailed stability and accuracy study.
 \end{itemize}
 \end{frame}
 
-% --- Zadanie 3 ---
-\section*{Zadanie 3 — Model surogatowy ODE dla dyfuzji innowacji}
+% --- Task 3 ---
+\section*{Task 3 - ODE Surrogate Model for Innovation Diffusion}
 
-\begin{frame}{Wprowadzenie do modelu surogatowego}
+\begin{frame}{Introduction to the Surrogate Model}
 \begin{itemize}
-  \item \textbf{Cel:} Uproszczenie modelu PDE do modelu ODE poprzez eliminację zmiennej przestrzennej. Pozwala to na znacznie szybsze symulacje.
-  \item \textbf{Metoda:} Uśrednienie równania PDE po całej dziedzinie przestrzennej $x \in [0, 1]$.
+  \item \textbf{Goal:} Simplify the PDE model to an ODE model by eliminating the spatial variable. This enables much faster simulations.
+  \item \textbf{Method:} Averaging the PDE over the whole spatial domain $x \in [0, 1]$.
   $$ \frac{d}{dt} \int_0^1 u(x,t) dx = \int_0^1 D u_{xx} dx + \int_0^1 (p+qu)(1-u) dx $$
-  \item Przy warunkach brzegowych Neumanna, człon dyfuzyjny się zeruje: $\int_0^1 D u_{xx} dx = D[u_x]_0^1 = 0$.
-  \item Definiując $U(t) = \mathbb{E}[u(x,t)] = \int_0^1 u(x,t) dx$ i stosując przybliżenie $\mathbb{E}[R(u)] \approx R(\mathbb{E}[u])$, otrzymujemy model surogatowy ODE:
+  \item With Neumann boundary conditions, the diffusion term vanishes: $\int_0^1 D u_{xx} dx = D[u_x]_0^1 = 0$.
+  \item Defining $U(t) = \mathbb{E}[u(x,t)] = \int_0^1 u(x,t) dx$ and applying the approximation $\mathbb{E}[R(u)] \approx R(\mathbb{E}[u])$, we obtain the ODE surrogate model:
   $$ \frac{dU}{dt} = (p + qU)(1-U) $$
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Sieć neuronowa jako model surogatowy}
+\begin{frame}{Neural Network as a Surrogate Model}
 \begin{itemize}
-    \item \textbf{Cel:} Stworzenie uniwersalnego modelu surogatowego, który generalizuje dynamikę dla różnych parametrów $D, p, q$.
-    \item \textbf{Dane uczące:} Zbiór symulacji PDE dla losowych kombinacji parametrów (uczenie na wielu przebiegach).
-    \item \textbf{Architektura:} Sieć MLP z wejściem 4-wymiarowym $(t, D, p, q)$, dwiema warstwami ukrytymi i wyjściem $U(t)$.
-    \item \textbf{Wynik:} Sieć nauczyła się odwzorowywać wpływ parametrów na krzywą adopcji, co pozwala na natychmiastową predykcję dla nowych, nieznanych wcześniej parametrów.
+    \item \textbf{Goal:} Create a universal surrogate model that generalizes the dynamics for different parameters $D, p, q$.
+    \item \textbf{Training data:} A set of PDE simulations for random parameter combinations (learning on many runs).
+    \item \textbf{Architecture:} An MLP with a 4-dimensional input $(t, D, p, q)$, two hidden layers and output $U(t)$.
+    \item \textbf{Result:} The network learned to map the parameter influence onto the adoption curve, enabling instant prediction for new, previously unseen parameters.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Porównanie wszystkich trzech modeli}
+\begin{frame}{Comparison of All Three Models}
 \begin{figure}
   \centering
   \includegraphics[width=0.7\textwidth]{comparison_plot.png}
-  \caption{Porównanie średniej z modelu PDE, modelu surogatowego ODE oraz predykcji sieci neuronowej.}
+  \caption{Comparison of the PDE spatial mean, the ODE surrogate model and the neural network prediction.}
 \end{figure}
 \begin{itemize}
-    \item Parametry testowe: $D=0.02, p=0.079, q=6.68$.
-    \item Czas inferencji dla modelu ODE: $\approx 1.29$ ms.
-    \item Czas inferencji dla modelu NN: $\approx 0.87$ ms.
+    \item Test parameters: $D=0.02, p=0.079, q=6.68$.
+    \item Inference time for the ODE model: $\approx 0.60$ ms.
+    \item Inference time for the NN model: $\approx 0.16$ ms.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Wnioski końcowe}
+\begin{frame}{Final Conclusions}
 \begin{itemize}
-    \item Modele surogatowe (zarówno analityczne ODE, jak i sieci neuronowe) są potężnym narzędziem do przyspieszania symulacji złożonych systemów PDE.
-    \item Model ODE, mimo swojej prostoty, dostarcza dobrego przybliżenia ogólnej dynamiki systemu.
-    \item Sieć neuronowa wytrenowana na zbiorze symulacji potrafi generalizować i przewidywać dynamikę dla nowych parametrów z bardzo wysoką dokładnością i w czasie poniżej 1 ms.
-    \item Wybór odpowiedniego modelu surogatowego zależy od wymagań dotyczących dokładności, dostępności danych i potrzeby interpretowalności wyników.
+    \item Surrogate models (both analytic ODE and neural networks) are a powerful tool for accelerating simulations of complex PDE systems.
+    \item The ODE model, despite its simplicity, provides a good approximation of the overall system dynamics.
+    \item A neural network trained on a set of simulations can generalize and predict dynamics for new parameters with very high accuracy in under 1 ms.
+    \item The choice of surrogate model depends on accuracy requirements, data availability and the need for interpretability.
 \end{itemize}
 \end{frame}
 
-% --- zadanie 4 ----
+% --- Task 4 ----
+\section{Task 4: Sensitivity Analysis}
 
-\section{Zadanie 4: Analiza Wrażliwości}
-
-\begin{frame}{Cel i Metodyka Analizy Wrażliwości}
+\begin{frame}{Goal and Methodology of Sensitivity Analysis}
     \begin{itemize}
-        \item \textbf{Cel:} Zidentyfikowanie, które parametry wejściowe ($D, p, q$) mają największy wpływ na wynik modelu (średnia wartość $U$ w czasie $t=5.0$).
-        \item \textbf{Analizowane modele:}
+        \item \textbf{Goal:} Identify which input parameters ($D, p, q$) have the greatest impact on the model output (mean value $U$ at time $t=5.0$).
+        \item \textbf{Analyzed models:}
         \begin{itemize}
-            \item Pełny model czasowo-przestrzenny (PDE).
-            \item Uproszczony model czasowy (surogat ODE).
+            \item Full spatio-temporal model (PDE).
+            \item Simplified temporal model (ODE surrogate).
         \end{itemize}
-        \item \textbf{Użyte metody:}
+        \item \textbf{Methods used:}
         \begin{itemize}
-            \item \textbf{Metoda Morrisa:} Metoda przesiewowa, szybka, do identyfikacji najważniejszych parametrów. Mierzy ogólny wpływ ($\mu^*$) i interakcje/nieliniowość ($\sigma$).
-            \item \textbf{Metoda Sobola:} Metoda globalna oparta na wariancji. Dokładniejsza, ale kosztowniejsza. Rozdziela wariancję wyjścia na wpływ poszczególnych parametrów ($S1$) i ich interakcje ($ST$).
+            \item \textbf{Morris method:} Fast screening method for identifying the most important parameters. Measures overall influence ($\mu^*$) and interactions/nonlinearity ($\sigma$).
+            \item \textbf{Sobol method:} Global variance-based method. More accurate but more expensive. Decomposes output variance into individual parameter contributions ($S1$) and interactions ($ST$).
         \end{itemize}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki - Metoda Morrisa}
+\begin{frame}{Results - Morris Method}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             \centering
-            \textbf{Model ODE}\\
+            \textbf{ODE model}\\
             \includegraphics[width=\textwidth]{figures/morris_model_ode.png}
         \end{column}
         \begin{column}{0.5\textwidth}
             \centering
-            \textbf{Model PDE}\\
+            \textbf{PDE model}\\
             \includegraphics[width=\textwidth]{figures/morris_model_pde.png}
         \end{column}
     \end{columns}
     \begin{itemize}
-        \item \textbf{Wnioski:} W obu modelach parametr \textbf{q} (imitacja) wykazuje największy wpływ (najwyższe $\mu^*$) oraz znaczące interakcje (wysokie $\sigma$). Parametr \textbf{p} ma umiarkowany wpływ, a \textbf{D} (w modelu PDE) jest najmniej istotny.
+        \item \textbf{Conclusions:} In both models, parameter \textbf{q} (imitation) shows the greatest influence (highest $\mu^*$) and significant interactions (high $\sigma$). Parameter \textbf{p} has a moderate influence, and \textbf{D} (in the PDE model) is the least important.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki - Metoda Sobola}
+\begin{frame}{Results - Sobol Method}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             \centering
-            \textbf{Model ODE}\\
+            \textbf{ODE model}\\
             \includegraphics[width=\textwidth]{figures/sobol_model_ode.png}
         \end{column}
         \begin{column}{0.5\textwidth}
             \centering
-            \textbf{Model PDE}\\
+            \textbf{PDE model}\\
             \includegraphics[width=\textwidth]{figures/sobol_model_pde.png}
         \end{column}
     \end{columns}
     \begin{itemize}
-        \item \textbf{Potwierdzenie:} Analiza Sobola potwierdza wyniki z metody Morrisa.
-        \item \textbf{Wpływ całkowity (ST):} Parametr \textbf{q} ma dominujący wpływ.
-        \item \textbf{Interakcje:} Duża różnica między $ST$ a $S1$ dla parametru $q$ wskazuje na jego silne interakcje z innymi parametrami.
-        \item \textbf{Wpływ D:} Wpływ parametru $D$ na średnią wartość $U(t)$ jest marginalny.
+        \item \textbf{Confirmation:} Sobol analysis confirms the Morris results.
+        \item \textbf{Total influence (ST):} Parameter \textbf{q} has the dominant influence.
+        \item \textbf{Interactions:} The large difference between $ST$ and $S1$ for parameter $q$ indicates strong interactions with other parameters.
+        \item \textbf{Influence of D:} The influence of parameter $D$ on the mean value $U(t)$ is marginal.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Wnioski i Uproszczenie Modelu}
-    \textbf{Wnioski z Analizy Wrażliwości:}
+\begin{frame}{Conclusions and Model Simplification}
+    \textbf{Conclusions from sensitivity analysis:}
     \begin{itemize}
-        \item Parametr imitacji ($q$) jest kluczowym czynnikiem sterującym dynamiką średniego poziomu adaptacji $U(t)$.
-        \item Parametr innowacji ($p$) jest drugorzędny, ale wciąż istotny.
-        \item Parametr dyfuzji ($D$) ma znikomy wpływ na \textit{średnią} wartość w systemie, chociaż jest kluczowy dla dynamiki \textit{przestrzennej}.
+        \item The imitation parameter ($q$) is the key factor controlling the dynamics of the mean adoption level $U(t)$.
+        \item The innovation parameter ($p$) is secondary but still significant.
+        \item The diffusion parameter ($D$) has negligible influence on the \textit{mean} value of the system, although it is crucial for the \textit{spatial} dynamics.
     \end{itemize}
     \vspace{1cm}
-    \textbf{Propozycja uproszczenia modelu:}
+    \textbf{Proposed model simplification:}
     \begin{itemize}
-        \item Model ODE jest już uproszczeniem, które ignoruje $D$. Analiza potwierdza, że jest to uzasadnione, jeśli interesuje nas tylko średnia wartość $U(t)$.
-        \item W modelu PDE, parametr $D$ można by ustalić na stałą wartość (np. jego średnią z badanego zakresu) bez dużej utraty dokładności dla tej konkretnej miary wyjściowej. To redukuje złożoność problemu o jeden wymiar.
+        \item The ODE model is already a simplification that ignores $D$. The analysis confirms this is justified if only the mean value $U(t)$ matters.
+        \item In the PDE model, parameter $D$ could be fixed at a constant value (e.g. its mean over the studied range) without much accuracy loss for this particular output measure. This reduces the problem complexity by one dimension.
     \end{itemize}
 \end{frame}
 
-% --- Zadanie 5 ---
-\section*{Zadanie 5 — Asymilacja danych (ABC i 3D-Var)}
+% --- Task 5 ---
+\section*{Task 5 - Data Assimilation (ABC and 3D-Var)}
 
-\begin{frame}{Sformułowanie problemu asymilacji}
+\begin{frame}{Data Assimilation Problem Formulation}
 \begin{itemize}
-  \item \textbf{Cel:} Odtworzenie parametrów modelu i stanu układu na podstawie zaszumionych obserwacji w oknie czasowym.
-  \item \textbf{Metody:}
+  \item \textbf{Goal:} Reconstruct the model parameters and system state from noisy observations within a time window.
+  \item \textbf{Methods:}
     \begin{itemize}
-      \item \textbf{ABC (Approximate Bayesian Computation):} Metoda bezgradientowa, polegająca na losowaniu parametrów i akceptacji tych, które generują wyniki bliskie obserwacjom. Odporna na lokalne minima, ale kosztowna obliczeniowo.
-      \item \textbf{3D-Var (Variational):} Minimalizacja funkcji kosztu $J(x) = ||y - H(x)||^2$. Szybka zbieżność przy dostępnych gradientach, ale ryzyko utknięcia w minimach lokalnych.
+      \item \textbf{ABC (Approximate Bayesian Computation):} A gradient-free method based on sampling parameters and accepting those that generate results close to the observations. Robust to local minima but computationally expensive.
+      \item \textbf{3D-Var (Variational):} Minimization of the cost function $J(x) = ||y - H(x)||^2$. Fast convergence when gradients are available, but risks getting stuck in local minima.
     \end{itemize}
-  \item \textbf{Eksperyment:} Dane "rzeczywiste" z modelu PDE + szum Gaussowski. Testy dla modelu surogatowego ODE i pełnego PDE przy trzech budżetach czasowych (Low: 2s, Medium: 5s, High: 15s).
+  \item \textbf{Experiment:} "Real" data from the PDE model + Gaussian noise. Tests for the ODE surrogate and the full PDE with three time budgets (Low: 2s, Medium: 5s, High: 15s).
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki asymilacji dla modelu ODE}
+\begin{frame}{Assimilation Results for the ODE Model}
 \begin{columns}
 \column{0.5\textwidth}
 \begin{itemize}
-  \item \textbf{3D-Var:} Bardzo szybka zbieżność (czas < 0.1s). Błąd RMSE minimalny ($\approx 0.006$). Metoda idealna dla prostego modelu ODE.
-  \item \textbf{ABC:} Wymaga wielu iteracji (tysiące). Błąd stabilny ($\approx 0.012$), ale wyższy niż w 3D-Var.
-  \item \textbf{Wnioski:} Dla tanich modeli numerycznych metody gradientowe (lub quasi-newtonowskie) są bezkonkurencyjne.
+  \item \textbf{3D-Var:} Very fast convergence (time < 0.1s). Minimal RMSE ($\approx 0.006$). The ideal method for the simple ODE model.
+  \item \textbf{ABC:} Requires many iterations (thousands). Stable error ($\approx 0.012$), but higher than 3D-Var.
+  \item \textbf{Conclusions:} For cheap numerical models, gradient-based (or quasi-Newton) methods are unbeatable.
 \end{itemize}
 \column{0.5\textwidth}
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{ode_assimilation_results_budget_high.png}
-  \caption{Wyniki asymilacji ODE (Budżet High). Czerwona linia (Var) idealnie pokrywa się z prawdą.}
+  \includegraphics[width=\textwidth]{../zad5/results/ode_assimilation_results_budget_high.png}
+  \caption{ODE assimilation results (High budget). The red line (Var) matches the truth almost perfectly.}
 \end{figure}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Wyniki asymilacji dla modelu PDE}
+\begin{frame}{Assimilation Results for the PDE Model}
 \begin{columns}
 \column{0.5\textwidth}
 \begin{itemize}
-  \item \textbf{Wyzwanie:} Wysoki koszt pojedynczej symulacji PDE drastycznie ogranicza liczbę iteracji.
-  \item \textbf{ABC:} W budżecie 15s wykonano tylko ok. 76 iteracji. Mimo to, metoda znalazła przybliżone rozwiązanie (RMSE $\approx 0.026$).
-  \item \textbf{3D-Var:} Metoda nie zdążyła wykonać skutecznej optymalizacji w zadanym czasie (RMSE $\approx 0.248$ - poziom zgadywania). Numeryczne wyznaczanie gradientu jest zbyt kosztowne dla PDE przy krótkim budżecie.
+  \item \textbf{Challenge:} A single PDE evaluation is costly, which limits the number of iterations within a budget.
+  \item \textbf{ABC:} Reaches an approximate solution with RMSE $\approx 0.027$ - stable but clearly suboptimal.
+  \item \textbf{3D-Var:} After reusing the sparse factorization in the PDE solve (5x fewer iterations needed per evaluation), the optimizer converges to RMSE $\approx 0.002$ - an order of magnitude better than ABC.
 \end{itemize}
 \column{0.5\textwidth}
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{pde_assimilation_results_center_budget_high.png}
-  \caption{Wyniki asymilacji PDE (Budżet High). ABC (niebieska) radzi sobie lepiej niż przerwana optymalizacja wariacyjna.}
+  \includegraphics[width=\textwidth]{../zad5/results/pde_assimilation_results_center_budget_high.png}
+  \caption{PDE assimilation results (High budget). Var (red) matches the truth almost perfectly.}
 \end{figure}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Podsumowanie wyników (RMSE)}
+\begin{frame}{Summary of Results (RMSE)}
 \begin{table}
 \centering
 \begin{tabular}{l|l|c|c|c}
-\textbf{Model} & \textbf{Metoda} & \textbf{Low (2s)} & \textbf{Medium (5s)} & \textbf{High (15s)} \\
+\textbf{Model} & \textbf{Method} & \textbf{Low (2s)} & \textbf{Medium (5s)} & \textbf{High (15s)} \\
 \hline
-ODE & ABC & 0.0127 & 0.0114 & 0.0117 \\
+ODE & ABC & 0.0118 & 0.0116 & 0.0113 \\
 ODE & 3D-Var & \textbf{0.0061} & \textbf{0.0061} & \textbf{0.0061} \\
 \hline
-PDE & ABC & \textbf{0.0247} & \textbf{0.0263} & \textbf{0.0263} \\
-PDE & 3D-Var & 0.2482 & 0.2482 & 0.2482 \\
+PDE & ABC & 0.0271 & 0.0291 & 0.0281 \\
+PDE & 3D-Var & \textbf{0.0017} & \textbf{0.0024} & \textbf{0.0024} \\
 \end{tabular}
-\caption{Porównanie błędów RMSE predykcji dla całej trajektorii.}
+\caption{Comparison of trajectory-wide RMSE prediction errors.}
 \end{table}
-\textbf{Wniosek:} Do złożonych modeli (PDE) przy ograniczonym czasie, proste metody stochastyczne (ABC) mogą być bardziej "bezpieczne" niż kosztowne metody optymalizacyjne, chyba że dysponujemy analitycznym gradientem (Adjoint method).
+\textbf{Conclusion:} Once the model evaluation is cheap enough (factorized sparse solver), gradient-based variational methods clearly outperform stochastic ABC under the same time budgets.
 \end{frame}
 
-% --- Zadanie 6 ---
-\section*{Zadanie 6 — Model PINN (Physics-Informed Neural Network)}
+% --- Task 6 ---
+\section*{Task 6 - PINN (Physics-Informed Neural Network)}
 
-\begin{frame}{Koncepcja PINN}
+\begin{frame}{PINN Concept}
 \begin{itemize}
-  \item \textbf{Idea:} Połączenie danych obserwacyjnych z wiedzą fizyczną zawartą w równaniach różniczkowych (PDE).
-  \item \textbf{Architektura:} Sieć neuronowa $u_{NN}(x,t)$ aproksymująca rozwiązanie.
-  \item \textbf{Funkcja kosztu:} $L = L_{data} + L_{physics}$
+  \item \textbf{Idea:} Combine observational data with the physical knowledge contained in the differential equations (PDE).
+  \item \textbf{Architecture:} A neural network $u_{NN}(x,t)$ approximating the solution.
+  \item \textbf{Loss function:} $L = L_{data} + L_{physics}$
     \begin{itemize}
-      \item $L_{data} = \frac{1}{N_d} \sum (u_{NN}(x_i, t_i) - u_{obs})^2$ (dopasowanie do danych)
-      \item $L_{physics} = \frac{1}{N_f} \sum |f(u_{NN}(x_j, t_j))|^2$ (residuum PDE)
+      \item $L_{data} = \frac{1}{N_d} \sum (u_{NN}(x_i, t_i) - u_{obs})^2$ (data fit)
+      \item $L_{physics} = \frac{1}{N_f} \sum |f(u_{NN}(x_j, t_j))|^2$ (PDE residual)
     \end{itemize}
-  \item \textbf{Zaleta:} Możliwość trenowania na rzadkich danych i "uzupełniania" brakującej informacji fizyką.
+  \item \textbf{Advantage:} The ability to train on sparse data and "fill in" the missing information with physics.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Implementacja i Przebieg Treningu}
+\begin{frame}{Implementation and Training Run}
 \begin{itemize}
-  \item \textbf{Konfiguracja (utrudniona):} $nx=150$, $\Delta t=5\cdot10^{-4}$, $N_{data}=1200$, $N_{f}=12000$, szum \texttt{gaussian\_mixture} 5\%.
-  \item \textbf{Sieć:} MLP (5 warstw \texttimes{} 64, Tanh) z **residualnymi połączeniami**; \textbf{epoki:} 2000; \textbf{czas:} \(~76.58\,\)s, CPU.
-  \item \textbf{Techniki optymalizacji:} Learning rate scheduler (StepLR, $\gamma=0.9$), gradient clipping, **warmup strategia dla weights fizyki** ($\lambda_{phy}$: 0.1 \to 2.0 przez 500 epok).
-  \item \textbf{Strata (ostatnia):} $L \approx 0.006$ (Data $\approx 0.0056$, Physics $\approx 0.00022$) – znaczna poprawa stabilności i zbieżności.
+  \item \textbf{Configuration (hardened):} $nx=150$, $\Delta t=5\cdot10^{-4}$, $N_{data}=1200$, $N_{f}=12000$, noise \texttt{gaussian\_mixture} 5\%.
+  \item \textbf{Network:} MLP (5 layers $\times$ 64, Tanh) with \textbf{residual connections}; \textbf{epochs:} 2000; \textbf{time:} \(~75.75\,\)s, CPU.
+  \item \textbf{Optimization techniques:} Learning rate scheduler (StepLR, $\gamma=0.9$), gradient clipping, \textbf{warmup strategy for the physics weights} ($\lambda_{phy}$: 0.1 $\to$ 2.0 over 500 epochs).
+  \item \textbf{Loss (last):} $L \approx 0.006$ (Data $\approx 0.0056$, Physics $\approx 0.00022$) - significant improvement in stability and convergence.
 \end{itemize}
 
 \begin{figure}
   \centering
   \includegraphics[height=0.4\textheight]{../zad6/results/loss_history_improved.png}
-  \caption{Historia funkcji kosztu. Gładka zbieżność dzięki architektze residualnej i warm-upowi $\lambda$.}
+  \caption{Loss history. Smooth convergence thanks to the residual architecture and $\lambda$ warmup.}
 \end{figure}
 
 \end{frame}
 
-\begin{frame}{Wyniki Rekonstrukcji Pola (PINN vs PDE)}
+\begin{frame}{Field Reconstruction Results (PINN vs PDE)}
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{../zad6/results/pinn_results_heatmap_improved.png}
-  \caption{Porównanie rozwiązania referencyjnego (PDE), predykcji PINN (ulepszonej) oraz błędu absolutnego. Błąd rozmieszczony równomiernie, niemal niewidoczny.}
+  \caption{Comparison of the reference solution (PDE), the (improved) PINN prediction and the absolute error. The error is distributed evenly and nearly invisible.}
 \end{figure}
 \begin{itemize}
-    \item \textbf{MAE:} 0.031193 (vs. 0.1855 baseline) --- **82.2\% redukcja** \quad
-    \item \textbf{RMSE:} 0.058344 (vs. 0.2359) --- **75.3\% redukcja** \quad
-    \item \textbf{relL2:} 0.065468 (vs. 0.2647) --- **75.3\% redukcja**
-    \item Architektura residualna i warm-up strategia pozwalają na znacznie lepsze uczenie się fizyki mimo szumu.
+    \item \textbf{MAE:} 0.031354 (vs. 0.1855 baseline) --- \textbf{83.1\% reduction} \quad
+    \item \textbf{RMSE:} 0.061202 (vs. 0.2359) --- \textbf{74.1\% reduction} \quad
+    \item \textbf{relL2:} 0.068676 (vs. 0.2647) --- \textbf{74.1\% reduction}
+    \item The residual architecture and warmup strategy enable much better physics learning despite the noise.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Porównanie Dynamiki Średniej (PINN vs PDE vs ODE)}
+\begin{frame}{Mean Dynamics Comparison (PINN vs PDE vs ODE)}
 \begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{../zad6/results/pinn_vs_pde_vs_ode_improved.png}
-  \caption{Porównanie średniej przestrzennej $u(t)$. PINN (ulepszona, czerwona przerywa) niemal idealnie pokrywa się z PDE (czarna ciągła).}
+  \caption{Comparison of the spatial mean $u(t)$. The (improved) PINN (red dashed) almost perfectly matches the PDE (black solid).}
 \end{figure}
 \begin{itemize}
-  \item **PINN (ulepszona)** bardzo dokładnie śledzi prawdą trajektorię PDE
-  \item Obie metody (PINN i ODE surrogat) wykazują zgodę w całym oknie czasowym
-  \item Poprawa wynika z: (1) głębszej sieci, (2) residualnych połączeń, (3) adaptacyjnego ważenia fizyki i (4) lepszej optymalizacji
+  \item The \textbf{improved PINN} tracks the true PDE trajectory very accurately
+  \item Both methods (PINN and ODE surrogate) agree over the whole time window
+  \item The improvement results from: (1) a deeper network, (2) residual connections, (3) adaptive physics weighting and (4) better optimization
 \end{itemize}
 \end{frame}
 
-% --- Zadanie 7 ---
-\section*{Zadanie 7 — Supermodel (ODE) i SuperNet (PINN)}
+% --- Task 7 ---
+\section*{Task 7 - SuperModel (ODE) and SuperNet (PINN)}
 
-\begin{frame}{Koncepcja Supermodelowania}
+\begin{frame}{The Supermodeling Concept}
 \begin{itemize}
-  \item \textbf{Problem:} Modele często mają niedokładne parametry.
-  \item \textbf{Rozwiązanie:} Połączenie wielu "niedoskonałych" modeli w jeden zespół (ensemble), który uczy się konsensusu.
-  \item \textbf{Supermodel ODE:} Zespół modeli ODE sprzężonych członem relaksacyjnym (nudging) do średniej trajektorii.
-  \item \textbf{SuperNet PINN:} Zespół sieci neuronowych uczonych równolegle z dodatkowym \textit{Coupling Loss}, wymuszającym spójność predykcji w punktach kolokacji.
+  \item \textbf{Problem:} Models often have inaccurate parameters.
+  \item \textbf{Solution:} Combine many "imperfect" models into one ensemble that learns a consensus.
+  \item \textbf{SuperModel ODE:} An ensemble of ODE models coupled by a relaxation (nudging) term towards the mean trajectory.
+  \item \textbf{SuperNet PINN:} An ensemble of neural networks trained in parallel with an additional \textit{Coupling Loss}, enforcing prediction consistency at collocation points.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki: Supermodel ODE}
+\begin{frame}{Results: SuperModel ODE}
 \begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_ode_results.png}
-  \caption{Supermodel ODE (czerwona) vs Prawda (czarna) vs Pojedyncze modele (zielone).}
+  \caption{SuperModel ODE (red) vs Truth (black) vs single models (green).}
 \end{figure}
 \begin{itemize}
-    \item Pojedyncze modele z zaburzonymi parametrami (p, q) znacznie odbiegają od prawdy.
-    \item Sprzężony Supermodel redukuje błąd, choć z lekkim przewyższeniem w fazie nasycenia.
+    \item Single models with perturbed parameters (p, q) deviate significantly from the truth.
+    \item The coupled SuperModel reduces the error, though with a slight overshoot in the saturation phase.
     \item \textbf{RMSE Single ODE:} 0.111640 \qquad \textbf{RMSE Supermodel:} 0.045112.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Wyniki: SuperNet PINN (Ulepszona)}
+\begin{frame}{Results: SuperNet PINN (Improved)}
 \begin{itemize}
-    \item \textbf{Trening (ulepszone):} 3 sieci PINN, 2000 epok, czas: 186.24s (CPU), szum pomiarowy 5\% + Coupling Loss.
-    \item \textbf{Architektura:} Każda sieć: 5 warstw \texttimes{} 64 neurony z residualnymi połączeniami (jak w zad6)
-    \item \textbf{Optymalizacja:} Learning rate scheduler, gradient clipping, **warmup Coupling Loss** ($\lambda_{couple}$: 0.1 \to 0.5 przez 500 epok)
-    \item \textbf{Strata (ostatnia):} Total $\approx0.030$ (znacznie lepiej niż poprzednio) — zbalansowana konwergencja.
+    \item \textbf{Training (improved):} 3 PINN networks, 2000 epochs, time: 156.08s (CPU), 5\% measurement noise + Coupling Loss.
+    \item \textbf{Architecture:} Each network: 5 layers $\times$ 64 neurons with residual connections (as in task 6)
+    \item \textbf{Optimization:} Learning rate scheduler, gradient clipping, \textbf{warmup Coupling Loss} ($\lambda_{couple}$: 0.1 $\to$ 0.5 over 500 epochs)
+    \item \textbf{Loss (last):} Total $\approx0.030$ (much better than before) - balanced convergence.
 \end{itemize}
 \begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{../zad7/results/supermodel_vs_supernet_improved.png}
-  \caption{Porównanie: SuperNet PINN (ulepszona, niebieska) vs Supermodel ODE (czerwona) vs Prawda (czarna).}
+  \caption{Comparison: SuperNet PINN (improved, blue) vs SuperModel ODE (red) vs Truth (black).}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Podsumowanie i Wnioski Końcowe (Zadania 6 i 7)}
+\begin{frame}{Summary and Final Conclusions (Tasks 6 and 7)}
 \begin{table}
 \centering
 \begin{tabular}{l|cc}
 \textbf{Model} & \textbf{MAE} & \textbf{RMSE} \\
 \hline
-\textbf{Zadanie 6:} & & \\
+\textbf{Task 6:} & & \\
   Single PINN (baseline) & 0.1855 & 0.2359 \\
-  PINN (ulepszona) & \textbf{0.0312} & \textbf{0.0583} \\
+  PINN (improved) & \textbf{0.0314} & \textbf{0.0612} \\
 \hline
-\textbf{Zadanie 7:} & & \\
+\textbf{Task 7:} & & \\
   Single Perturbed ODE & 0.0549 & 0.1116 \\
-  Supermodel ODE & 0.0222 & 0.0451 \\
-  SuperNet PINN (ulepszona) & \textbf{0.0172} & \textbf{0.0178} \\
+  SuperModel ODE & 0.0222 & 0.0451 \\
+  SuperNet PINN (improved) & \textbf{0.0107} & \textbf{0.0125} \\
 \end{tabular}
-\caption{Zestawienie błędów rekonstrukcji średniej dynamiki — porównanie baseline vs. ulepszone modele.}
+\caption{Reconstruction error comparison of the mean dynamics - baseline vs. improved models.}
 \end{table}
 
-\textbf{Kluczowe ustalenia:}
+\textbf{Key findings:}
 \begin{itemize}
-  \item **Zad.6:** Architektura residualna + warm-up fizyki dała 75-82\% redukcję błędu PINN
-  \item **Zad.7:** SuperNet PINN (z residualnym sprzęgiem i optymalizacją) **przewyższa** Supermodel ODE (MAE: 0.0172 vs 0.0222, RMSE: 0.0178 vs 0.0451)
-  \item Głębokie sieci + residualny przepływ + adaptacyjne ważenie składników → znaczna poprawa generalizacji i dokładności
+  \item \textbf{Task 6:} Residual architecture + physics warmup gave a 74-83\% reduction in PINN error
+  \item \textbf{Task 7:} SuperNet PINN (with residual coupling and optimization) \textbf{outperforms} the SuperModel ODE (MAE: 0.0107 vs 0.0222, RMSE: 0.0125 vs 0.0451)
+  \item Deep networks + residual flow + adaptive loss-component weighting $\to$ significantly better generalization and accuracy
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Dyskusja Wyników i Praktyczne Implikacje}
+\begin{frame}{Discussion of Results and Practical Implications}
 \begin{itemize}
-  \item \textbf{PINN (Zad.6):} Przy poprawnej architekturze i strategii treningu, PINN może efektywnie łączyć dane zaszumione z wiedzą fizyczną, unikając przeuczenia.
-  \item \textbf{SuperNet (Zad.7):} Ensemble podejście z PINN osiąga lepsze wyniki niż Supermodel ODE dzięki: (i) większej pojemności sieci, (ii) elastyczności w modelowaniu interakcji między zespołem, (iii) lepszemu przyswajaniu fizyki.
-  \item \textbf{Wyzwania pozostające:} Interpretowlaność sieci, kosztowne obliczenia pochodnych wyższych rzędów, konieczność tuningu hiperparametrów.
-  \item \textbf{Rekomendacje:} Dla problemów z zaszumionym danymi stosować (a) sieci głębokie z residualnymi połączeniami, (b) learning rate scheduling, (c) warmup dla wag fizyki, (d) ensemble modeli w celu zmniejszenia wariancji.
+  \item \textbf{PINN (Task 6):} With the right architecture and training strategy, a PINN can effectively combine noisy data with physical knowledge while avoiding overfitting.
+  \item \textbf{SuperNet (Task 7):} The PINN ensemble approach achieves better results than the SuperModel ODE thanks to: (i) larger network capacity, (ii) flexibility in modeling interactions within the ensemble, (iii) better assimilation of physics.
+  \item \textbf{Remaining challenges:} Network interpretability, costly higher-order derivative computation, the need for hyperparameter tuning.
+  \item \textbf{Recommendations:} For problems with noisy data use (a) deep networks with residual connections, (b) learning rate scheduling, (c) warmup for physics weights, (d) model ensembles to reduce variance.
 \end{itemize}
 \end{frame}
+
+\bibliographystyle{plain}
+\bibliography{../report/bibliography}
 
 \end{document}
