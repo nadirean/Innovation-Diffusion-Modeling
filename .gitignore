@@ -210,6 +210,13 @@ __marimo__/
 materialy/
 .DS_Store
 
+# Generated experiment outputs (plots referenced by the report stay tracked)
+zad2/results/
+zad3/results/
+zad5/results/
+zad6/results/
+zad7/results/
+
 # LaTeX auxiliary files
 *.aux
 *.fdb_latexmk

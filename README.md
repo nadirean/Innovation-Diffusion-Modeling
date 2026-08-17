@@ -1,40 +1,55 @@
 # ISZ-Project
 
-### HARMONOGRAM
-- P1 (08 i 10.10.25) Organizacja Lab i Proj, Grupy dostają różne projekty i minitutoriale dotyczące realizacji różnych modeli/algorytmów
+**Report:** [report.pdf](report/report.pdf) · **Presentation:** [presentation.pdf](presentation/presentation.pdf)
 
-    Zadanie 1,2  Zrealizować model,. zbadać jak się zachowuje, sprawdzić jak działa dla różnych parametrów. Oswoić się z metodologią analizy wyników obliczeń.
+Modeling and simulation of **innovation diffusion and market demand** as a one-dimensional reaction-diffusion system
 
-- P2  (22-24.10.25) State of the Art (SOTA) – Zadanie 1 - Prezentacje założeń i wyników projektu
-- P3  (05-07.11.25) Zadanie 2 - Prezentacje wyników modelowania i analizy rezultatów.
-- P4 ( 19-21.11.25) konsultacje projektowe - Zadanie 3
+$$u_t = D\,u_{xx} + (p + q u)(1-u)$$
 
-    Zadanie 3   Stworzyć model surogatowy ODE zjawiska, ale tylko czasowy eliminując zmienną przestrzenną. Dobrać ręcznie parametry. Porównać wyniki z oryginalnym modelem czasowo-przestrzennym. Nauczyć na wygenerowanych danych w przedziale uczącym sieć neuronową. Porównać wyniki. Przygotować prezentację.
+where $u(x,t)\in[0,1]$ is the cumulative market share of an innovation, $D$ is spatial diffusion, $p$ the innovation rate, and $q$ the imitation rate (Bass model coupled with Fisher-KPP spatial propagation). The project walks the full modeling pipeline across seven tasks.
 
-- P5  (03-05.12.25)   prezentacja „state of research”  (SA)
+## Tasks
 
-    Zadanie 4  Na modelu dokonać analizy wrażliwości (SA). Znaleźć zarówno parametry i zmienne dynamiczne które są najbardziej wrażliwe. Dokonać tego dwoma metodami. Dokonać uproszczenia modelu bazując na otrzymanym wyniku. Porównać wyniki. Przygotować prezentację.
+| Task | What was done | Method |
+|------|---------------|--------|
+| 1 | Model formulation and state of the art | Bass + F-KPP PDE, literature review |
+| 2 | PDE solver comparison | Explicit Euler, semi-implicit, Crank-Nicolson (scipy.sparse) |
+| 3 | Temporal surrogate models | ODE surrogate (space-averaged PDE) + feed-forward NN |
+| 4 | Sensitivity analysis | Morris screening + Sobol variance decomposition (SALib) |
+| 5 | Data assimilation | ABC rejection sampling + 3D-Var (scipy) |
+| 6 | Physics-informed neural network | PINN with residual connections and adaptive physics weighting (PyTorch) |
+| 7 | Ensemble modeling | SuperModel (coupled ODEs) vs SuperNet (coupled PINNs) |
 
-    Zadanie 5  Na modelu dokonać asymilacji danych wybranymi dwoma metodami (ABC, 3D-Var). Dane „rzeczywiste” wygenerować z modelu a próbki zaszumić szumem Gaussowskim. Sprawdzić jakość predykcji w przód i w tył na podstawie wybranego fragmentu trajektorii i dla różnej ilości próbek. Można dla kilku fragmentów trajektorii jeżeli bardzo skomplikowana. Podać wyniki dla trzech budżetów czasowych. Przygotować prezentację.
+## Key results
 
-- P6 (17 i 19.12.25)  Konsultacje projektowe  Zadanie 4/5
-- P7 ( 07-09.12.24) prezentacje „state of research” 
+| Metric | Value |
+|--------|-------|
+| Solver timings (mean) | explicit 0.005 s, semi-implicit 0.005 s, Crank-Nicolson 0.008 s |
+| Surrogate inference | ODE 0.60 ms vs NN 0.16 ms per sample |
+| Sensitivity | $q$ (imitation) dominant; $D$ negligible for spatial mean |
+| Data assimilation (RMSE) | ODE 3D-Var 0.0061; PDE 3D-Var 0.0017-0.0024 vs ABC 0.027-0.029 |
+| PINN (MAE/RMSE) | 0.0314 / 0.0612 (vs 0.1855 / 0.2359 baseline) |
+| SuperNet (MAE/RMSE) | 0.0107 / 0.0125 vs SuperModel ODE 0.0222 / 0.0451 |
 
-    Zadanie 6/7 -> Stwórz model surogatowy PINN i sprawdź czy  działa lepiej niż pojedynczy model.
+Main findings: PINNs perform well with sparse noisy measurements, and the SuperNet ensemble improves robustness to parameter uncertainty beyond both a single PINN and the ODE SuperModel.
 
-### TEMATYKA PROJEKTÓW
-Studenci otrzymują(projekt)/wybierają(laboratoria) model zjawiska opisanego układem równań różniczkowych cząstkowych zależnych od czasu. Implementują ten model.
+## Repository layout
 
-- Zadanie 1 polega na przygotowaniu prezentacji opisującej model przestrzenno-czasowy PDE, też na podstawie istniejącej literatury. Formułują ostateczny model zjawiska. Konsultują model z czatem AI.
+- `common/` - shared package: model, solvers, surrogates, PINN, SuperModel/SuperNet, assimilation, sensitivity, plotting
+- `zad2/` - solver comparison notebook, results in `zad2/results/`
+- `zad3/` - ODE surrogate + neural-network surrogate notebook
+- `zad4/` - sensitivity analysis notebook (Morris, Sobol)
+- `zad5/` - data assimilation notebook (ABC, 3D-Var)
+- `zad6/` - PINN notebook + results
+- `zad7/` - SuperModel / SuperNet notebook + results
+- `report/` - LaTeX report
+- `presentation/` - LaTeX presentation (metropolis theme)
 
-- Zadanie 2 polega na uruchomieniu modelu dla różnych solwerów i porównanie wyników. Wnioski dotyczą (1) czasów obliczeń dla różnych rozdzielczości czasowo-przestrzennych oraz (2) wyboru ekstremalnych parametrów modelu, a także warunków początkowych i brzegowych. (3) Ocenić w jakich przedziałach mogą zawierać się te parametry. (4) Przygotowanie prezentacji.
+## How to run
 
-- Zadanie 3 – Stworzyć model surogatowy ODE zjawiska, ale tylko czasowy eliminując zmienną przestrzenną. Dobrać ręcznie parametry. Porównać wyniki z oryginalnym modelem czasowo-przestrzennym. Przy pomocy danych wygenerowanych w modelu w zadanym przedziale czasowym nauczyć sieć neuronową i porównać wyniki z modelem ODE i PDE. Przygotować prezentację.
+```bash
+uv sync
+```
 
-- Zadanie 4 Na modelu wejściowym PDE i surogatowym ODE dokonać analizy wrażliwości (SA). Znaleźć zarówno parametry i zmienne dynamiczne, które są najbardziej wrażliwe. Dokonać tego dwoma metodami (Morris, Sobel). Spróbować dokonać uproszczenia modeli bazując na otrzymanym wyniku. Porównać wyniki. Przygotowanie prezentacji.
-
-- Zadanie 5 Na modelach PDE i ODE dokonać asymilacji danych wybranymi dwoma metodami (ABC, 3D-Var). Dane „rzeczywiste” dla modelu PDE wygenerować „ręcznie” a dla modelu ODE wygenerować z modelu PDE do tego dodać dane „rzeczywiste”. Sprawdzić jakość predykcji w przód i w tył na podstawie wybranego fragmentu trajektorii i dla różnej ilości próbek. Można dla kilku fragmentów trajektorii jeżeli bardzo skomplikowana. Podać wyniki dla trzech budżetów czasowych. Przygotować prezentację.
-
-- Zadanie 6 Dla modelu PDE (z zasymilowanymi danymi) stworzyć model PINN i sprawdzić jego wartość predykcyjną w porównaniu z symulacją PDE oraz z modelem ODE. Przygotować prezentację.
-
-- Zadanie 7 Na bazie modelu ODE stworzyć Supermodel, a na bazie sieci PINN z modelu PDE stworzyć SuperNet. Porównać zachowania predykcyjne tych podejść. Przygotować prezentację.
+- **zad2-zad7**: `jupyter lab`, open the notebook in the respective folder and run the cells (zad6/zad7 train PINNs on CPU, ~80 s and ~190 s respectively).
+- The report and presentation compile with `latexmk` inside `report/` and `presentation/`.
