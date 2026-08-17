@@ -1,5 +1,5 @@
 [project]
-name = "isz-project"
+name = "innovation-diffusion-modeling"
 version = "0.1.0"
 description = "Diffusion of innovation modeling: PDE solvers, surrogates, sensitivity analysis, data assimilation, PINN, and SuperNet"
 readme = "README.md"

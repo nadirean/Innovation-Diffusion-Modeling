@@ -1,4 +1,6 @@
-# ISZ-Project
+# Innovation diffusion modeling
+
+Course project for **Informatyka systemów złożonych** (Complex Systems Informatics) at AGH University of Krakow.
 
 **Report:** [report.pdf](report/report.pdf) · **Presentation:** [presentation.pdf](presentation/presentation.pdf)
 
